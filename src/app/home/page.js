@@ -13,5 +13,12 @@ export default async function Account() {
     data: { session },
   } = await supabase.auth.getSession()
 
-  return <AccountForm session={session} />
+  return (
+    <div className="bg-slate-900 h-screen py-10 px-5">
+      <div>
+        <h1 className="text-5xl font-extralight mb-5">My Account</h1>
+      </div>
+      <AccountForm session={session} />
+    </div>
+  )
 }
