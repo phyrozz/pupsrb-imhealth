@@ -68,7 +68,7 @@ export default function AccountForm({ session }) {
   }
 
   return (
-    <div className="bg-gradient-to-r from-slate-700 to-slate-800 rounded-xl shadow-lg py-10 px-5 flex flex-col flex-wrap md:flex-row">
+    <div className="bg-gradient-to-r from-slate-700 to-slate-800 rounded-xl shadow-lg py-10 px-5 w-full md:w-1/2 flex flex-wrap flex-row">
       <Avatar
         uid={user.id}
         url={avatar_url}

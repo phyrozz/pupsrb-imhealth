@@ -56,7 +56,7 @@ export default function Avatar({ uid, url, size, onUpload }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-5">
+    <div className="flex flex-col items-center justify-center gap-5 w-full">
       {avatarUrl ? (
         <Image
           width={size}
