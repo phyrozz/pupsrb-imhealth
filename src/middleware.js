@@ -12,7 +12,7 @@ export async function middleware(req) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // if user is signed in and the current path is / redirect the user to /home
+  // if user is signed in and the current path is / redirect the user to /dashboard
   if (user && req.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
