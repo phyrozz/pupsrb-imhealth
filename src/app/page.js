@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <NextUIProvider>
       <main className="light text-foreground bg-background">
-        <div className="bg-slate-200 h-screen p-10 justify-between flex flex-col">
+        <div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen p-10 justify-between flex flex-col">
           <div>
             <h1 className="text-slate-950 text-2xl font-extralight">Welcome to</h1>
             <h1 className="text-slate-950 text-6xl font-extralight mb-10">PUPSRC-iMHealth!</h1>

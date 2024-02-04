@@ -7,7 +7,7 @@ import { ArrowBackRounded } from "@mui/icons-material"
 export default function SignUpPage() {
     return (
         <NextUIProvider>
-            <div className="h-screen bg-slate-200 flex flex-col justify-center items-center relative">
+            <div className="h-screen bg-gradient-to-r from-slate-50 to-slate-300 flex flex-col justify-center items-center relative">
                 <div className="absolute left-0 top-0 p-5">
                     <Button as={Link} href="/assessment/login" variant="faded">
                         <ArrowBackRounded />

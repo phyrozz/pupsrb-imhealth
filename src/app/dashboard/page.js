@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getSession()
 
   return (
-    <div className="bg-slate-900 h-screen py-10 px-5 overflow-hidden">
+    <div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen py-10 px-5 overflow-hidden">
       <Navbar />
       <Dashboard session={ session } />
     </div>

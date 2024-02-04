@@ -1,6 +1,6 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import AccountForm from '../account/account-form'
+import AccountForm from './account-form'
 import Navbar from '../navbar';
 
 export default async function Account() {
@@ -15,12 +15,11 @@ export default async function Account() {
   } = await supabase.auth.getSession()
 
   return (
-    <div className="bg-slate-900 h-screen py-10 px-5 overflow-hidden flex flex-col items-center">
+    <div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen py-10 px-5 overflow-hidden flex flex-col items-center">
       <Navbar />
-      <div>
-        <h1 className="text-5xl font-extralight my-8 text-right">My Account</h1>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-1/2 w-full md:px-0 px-5">
+        <AccountForm session={session} />
       </div>
-      <AccountForm session={session} />
     </div>
   )
 }

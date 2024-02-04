@@ -6,7 +6,7 @@ import { NextUIProvider } from "@nextui-org/react"
 export default function AssessmentLoginPage() {
     return (
         <NextUIProvider>
-            <div className="h-screen bg-slate-200 flex flex-col justify-center items-center">
+            <div className="h-screen bg-gradient-to-r from-slate-50 to-slate-300 flex flex-col justify-center items-center">
                 <AuthForm headerText="Sign in" subText="to Answer Your Assessment Form" signUpHref="/assessment/sign-up" />
             </div>
         </NextUIProvider>
