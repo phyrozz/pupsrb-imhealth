@@ -23,7 +23,9 @@ export const json = {
       "name": "age",
       "title": "Age",
       "isRequired": true,
-      "inputType": "number"
+      "inputType": "number",
+      "min": 18,
+      "max": 150
      },
      {
       "type": "html",
@@ -398,8 +400,7 @@ export const json = {
       "minRateDescription": "Not at all",
       "maxRateDescription": "Nearly every day"
      }
-    ],
-    "title": "Assessment"
+    ]
    }
   ],
   "pageNextText": "I Agree",

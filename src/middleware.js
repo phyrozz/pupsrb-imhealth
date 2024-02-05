@@ -30,7 +30,7 @@ export async function middleware(req) {
         ? ['/', '/assessment', '/assessment/login', '/assessment/form', '/assessment/sign-up']
         : ['/', '/dashboard', '/students', '/my-account'];
     } else {
-      allowedPaths = ['/', '/assessment', '/assessment/login', '/assessment/sign-up', '/assessment/form'];
+      allowedPaths = ['/', '/assessment', '/assessment/login', '/assessment/sign-up'];
     }
 
     // Check if the current path is allowed for the user
