@@ -5,26 +5,46 @@ export async function middleware(req) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res }, { supabaseUrl: supabaseUrl, supabaseKey: supabaseKey })
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res }, { supabaseUrl, supabaseKey });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  // if user is signed in and the current path is / redirect the user to /dashboard
-  if (user && req.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', req.url))
+    let allowedPaths;
+
+    if (user) {
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('is_student')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      allowedPaths = profileData.is_student
+        ? ['/', '/assessment', '/assessment/login', '/assessment/form', '/assessment/sign-up']
+        : ['/', '/dashboard', '/students', '/my-account'];
+    } else {
+      allowedPaths = ['/', '/assessment', '/assessment/login', '/assessment/sign-up', '/assessment/form'];
+    }
+
+    // Check if the current path is allowed for the user
+    if (!allowedPaths.includes(req.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  } catch (error) {
+    // Handle error (user not signed in, etc.)
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
-  // if user is not signed in and the current path is not / redirect the user to /
-  if (!user && req.nextUrl.pathname !== '/') {
-    return NextResponse.redirect(new URL('/', req.url))
-  }
-
-  return res
+  return res;
 }
 
 export const config = {
-  matcher: ['/', '/dashboard'],
-}
+  matcher: ['/', '/dashboard', '/students', '/my-account', '/assessment', '/assessment/login', '/assessment/sign-up', '/assessment/form'],
+};

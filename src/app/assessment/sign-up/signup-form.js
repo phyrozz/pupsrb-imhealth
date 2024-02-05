@@ -19,17 +19,22 @@ export default function SignUpForm() {
     e.preventDefault()
     try {
       if (password === confirmPassword) {
-        const { error } = await supabase.auth.signUp({email, password})
-
-        if (error) {
+        const { data, error } = await supabase.auth.signUp({ email, password })
+  
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+          setError("Account already exists.")
+        } else if (error) {
           throw error
+        } else {
+          setEmail('')
+          setPassword('')
+          setConfirmPassword('')
+          setError(null)
+          onOpen()
         }
-
-        onOpen()
       } else {
         setError("Passwords don't match.")
       }
-      
     } catch (error) {
       setError('Sign up failed.')
     }
@@ -44,7 +49,7 @@ export default function SignUpForm() {
                 <ModalHeader className="flex flex-col gap-1">Confirmation Sent</ModalHeader>
                 <ModalBody>
                   <p> A confirmation email has been sent to your email address.</p>
-                  <p>Please check your inbox or on your spam folder for the confirmation link then click on it to successfully verify your new account.</p>
+                  <p>Please check your inbox or your spam folder for the confirmation link to successfully verify your new account.</p>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="primary" onPress={onClose}>

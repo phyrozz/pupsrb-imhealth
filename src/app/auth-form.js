@@ -9,6 +9,8 @@ export default function AuthForm(props) {
   const headerText = props.headerText
   const subText = props.subText
   const signUpHref = props.signUpHref
+  const signInHref = props.signInHref
+  const checkIfStudent = props.checkIfStudent
 
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -22,15 +24,36 @@ export default function AuthForm(props) {
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data: userData, error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
-      if (error) {
-        throw error
+      if (authError) {
+        throw authError
       }
 
-      router.replace('/dashboard')
+      const { data, error: fetchError } = await supabase
+        .from('profiles')
+        .select('is_student')
+        .eq('id', userData.user.id)
+        .single()
+
+      if (fetchError) {
+        throw fetchError
+      }
+
+      const isStudent = data && data.is_student;
+
+      if ((checkIfStudent && isStudent) || (!checkIfStudent && !isStudent)) {
+        // Successfully logged in
+        router.replace(signInHref);
+      } else {
+        // User is not of the expected role
+        // You may also want to sign the user out if needed
+        await supabase.auth.signOut();
+        throw new Error('Invalid role');
+      }
+      
     } catch (error) {
-      setError('Login failed.')
+      setError('Login failed.');
     }
   }
 

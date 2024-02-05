@@ -15,7 +15,11 @@ export default function Home() {
             <h1 className="text-slate-950 text-6xl font-extralight mb-10">PUPSRC-iMHealth!</h1>
           </div>
           
-          <AuthForm headerText="Sign in" subText="as Admin" />
+          <AuthForm
+            headerText="Sign in"
+            subText="as Admin"
+            signInHref="/dashboard"
+          />
         </div>
       </main>
     </NextUIProvider>
