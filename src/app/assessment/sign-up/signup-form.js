@@ -48,8 +48,8 @@ export default function SignUpForm() {
               <>
                 <ModalHeader className="flex flex-col gap-1">Confirmation Sent</ModalHeader>
                 <ModalBody>
-                  <p> A confirmation email has been sent to your email address.</p>
-                  <p>Please check your inbox or your spam folder for the confirmation link to successfully verify your new account.</p>
+                  <p className="text-black">A confirmation email has been sent to your email address.</p>
+                  <p className="text-black">Please check your inbox or your spam folder for the confirmation link to successfully verify your new account.</p>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="primary" onPress={onClose}>
