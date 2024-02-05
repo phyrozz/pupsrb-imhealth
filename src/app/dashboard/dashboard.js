@@ -22,7 +22,7 @@ export default function Dashboard({ session }) {
   }, [getUserEmail])
 
 	return (
-    <div className="text-center md:text-left">
+    <div className="text-center md:text-left text-slate-700 px-5">
 			<h1 className="text-6xl font-thin pt-10">
 				Welcome!
 			</h1>

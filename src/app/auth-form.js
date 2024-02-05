@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardBody, CardHeader, Input, Divider, Button, Link } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, Input, Divider, Button, Link, CircularProgress } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import { ArrowForwardRounded } from '@mui/icons-material'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -16,12 +16,15 @@ export default function AuthForm(props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const supabase = createClientComponentClient({supabaseUrl: supabaseUrl, supabaseKey: supabaseKey})
 
   const handleLogin = async (e) => {
+    setIsLoading(true)
+
     e.preventDefault()
     try {
       const { data: userData, error: authError } = await supabase.auth.signInWithPassword({ email, password })
@@ -53,6 +56,8 @@ export default function AuthForm(props) {
       }
       
     } catch (error) {
+      setIsLoading(false)
+      start()
       setError('Login failed.');
     }
   }
@@ -83,7 +88,16 @@ export default function AuthForm(props) {
                 <p className="text-center text-red-600 font-bold text-sm">{error}</p>
               </div>
               <Button type="submit" color="primary">
-                <ArrowForwardRounded />
+                {isLoading ? <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0, 0.71, 0.2, 1.01]
+                  }}
+                >
+                  <CircularProgress />
+                </motion.div> : <ArrowForwardRounded />}
               </Button>
             </form>
             {signUpHref ? <div className="text-center mt-6 mb-3">

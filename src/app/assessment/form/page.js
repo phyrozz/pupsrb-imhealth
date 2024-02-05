@@ -16,9 +16,9 @@ export default async function AssessmentForm() {
 
   return (
     <div className=" h-screen bg-gray-100">
-      <Navbar  shouldHideOnScroll isBordered>
+      <Navbar shouldHideOnScroll isBordered>
         <NavbarBrand>
-          <p className="font-extralight text-xl">PUP-iMHealth</p>
+          <p className="text-xl font-bold text-black">PUP-iMHealth</p>
         </NavbarBrand>
         <NavbarContent justify="end">
           <NavbarItem>

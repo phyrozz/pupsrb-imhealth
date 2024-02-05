@@ -1,7 +1,7 @@
 export const json = {
   "title": "Patient Assessment Form",
   "logoPosition": "right",
-  "completedHtml": "<h4>Thank you for completing the survey!</h4>",
+  "completedHtml": "<h4>Thank you for completing the assessment! You may now close this tab.</h4>",
   "completedBeforeHtml": "<h4>Our records show that you have already completed this survey.</h4>",
   "loadingHtml": "<h4>Loading Survey...</h4>",
   "pages": [
