@@ -19,7 +19,7 @@ export default function SignUpForm() {
     e.preventDefault()
     try {
       if (password === confirmPassword) {
-        const { data, error } = await supabase.auth.signUp({ email, password, options: {emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/form"} })
+        const { data, error } = await supabase.auth.signUp({ email, password, options: {emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/login"} })
   
         if (data.user && data.user.identities && data.user.identities.length === 0) {
           setError("Account already exists.")
