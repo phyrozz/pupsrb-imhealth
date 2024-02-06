@@ -21,12 +21,15 @@ export default function SurveyComponent({ session }) {
     const results = sender.data
 
     try {
+      // Extract number values from results object and store in an array
+      const responsesArray = Object.values(results).map(value => parseInt(value, 10))
+
       const { data, error } = await supabase.from("assessments").insert([
         {
-          user_id: user?.id, // Replace with the actual user ID
-          responses: results,
+          user_id: user?.id,
+          responses: responsesArray,
         },
-      ]);
+      ])
 
       if (error) {
         console.error("Error inserting assessment:", error.message);

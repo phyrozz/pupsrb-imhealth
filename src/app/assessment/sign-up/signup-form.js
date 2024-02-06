@@ -34,7 +34,7 @@ export default function SignUpForm() {
       try {
         const { data: maritalStatuses, error } = await supabase
           .from('marital_statuses')
-          .select(`id, status`)
+          .select("id, status")
 
         if (error) {
           throw error
@@ -50,7 +50,7 @@ export default function SignUpForm() {
       try {
         const { data: programs, error } = await supabase
           .from('programs')
-          .select(`id, initial`)
+          .select("id, initial")
 
         if (error) {
           throw error
@@ -178,7 +178,7 @@ export default function SignUpForm() {
                     placeholder="Choose your program"
                     isRequired
                   >
-                    {(program) => <SelectItem key={program.id}>{program.initial}</SelectItem>}
+                    {(program) => <SelectItem key={program.id}><p className="text-black">{program.initial}</p></SelectItem>}
                   </Select>
                   <Input className="col-start-4" type="number" label="Year" value={year} min={1} max={5} onChange={(e) => setYear(e.target.value)} isRequired />
                   <Select
@@ -190,7 +190,7 @@ export default function SignUpForm() {
                     placeholder="Choose your status"
                     isRequired
                   >
-                    {(status) => <SelectItem key={status.id}>{status.status}</SelectItem>}
+                    {(status) => <SelectItem key={status.id}><p className="text-black">{status.status}</p></SelectItem>}
                   </Select>
                   <Input className="col-span-4" type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} isRequired />
                   <Input className="col-span-4" type="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} isRequired />
