@@ -1,10 +1,19 @@
 "use client"
 import React from "react"
-import { Button, NextUIProvider } from "@nextui-org/react"
+import { Button, NextUIProvider, CircularProgress } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
+import { ArrowForwardRounded } from "@mui/icons-material"
+import { motion } from "framer-motion"
 
 export default function AssessmentPage() {
     const router = useRouter()
+    
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const handleClick = () => {
+        setIsLoading(true)
+        router.push("/assessment/login")
+    }
 
     return (
         <NextUIProvider>
@@ -16,9 +25,22 @@ export default function AssessmentPage() {
                 <div className="p-5 flex flex-col gap-3">
                     <Button
                         color="primary"
-                        onClick={() => router.push("/assessment/login")}
+                        onClick={handleClick}
                     >
-                        Answer the form
+                        {isLoading ? <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                                duration: 0.5,
+                                ease: [0, 0.71, 0.2, 1.01]
+                            }}
+                            >
+                                <CircularProgress />
+                            </motion.div> : <>
+                            Answer the form
+                            <ArrowForwardRounded />
+                        </>}
+                        
                     </Button>
                 </div>
             </div>
