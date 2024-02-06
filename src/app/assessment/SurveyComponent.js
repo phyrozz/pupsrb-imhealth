@@ -39,7 +39,7 @@ export default function SurveyComponent({ session }) {
     } catch (error) {
       console.error("Error:", error.message);
     }
-  }, [])
+  }, [supabase, user?.id])
 
   survey.onComplete.add(onComplete);
 

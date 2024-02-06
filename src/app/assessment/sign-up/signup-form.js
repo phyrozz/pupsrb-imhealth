@@ -64,7 +64,7 @@ export default function SignUpForm() {
 
     fetchMaritalStatuses()
     fetchPrograms()
-  }, [])
+  }, [supabase])
 
   const handleMaritalStatusChange = (e) => {
     setMaritalStatus(e.target.value)
@@ -205,9 +205,9 @@ export default function SignUpForm() {
                     <Radio value={true}>Yes</Radio>
                     <Radio value={false}>No</Radio>
                   </RadioGroup>
-                  <p className="text-center text-red-600 font-bold text-sm">{error}</p>
+                  <p className="text-center text-red-600 font-bold text-sm col-span-4">{error}</p>
                 </div>
-                <p className="text-sm text-center mb-5">By creating an account, you agree to PUP's Privacy Statement. Read more at <Link size="sm" href="https://www.pup.edu.ph/privacy/" target="_blank">https://www.pup.edu.ph/privacy/</Link></p>
+                <p className="text-sm text-center mb-5">By creating an account, you agree to PUP&apos;s Privacy Statement. Read more at <Link size="sm" href="https://www.pup.edu.ph/privacy/" target="_blank">https://www.pup.edu.ph/privacy/</Link></p>
                 <div className="flex flex-col items-end">
                   <Button type="submit" color="primary">
                     {isLoading ? 
