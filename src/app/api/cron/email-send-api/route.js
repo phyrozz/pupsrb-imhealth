@@ -12,7 +12,7 @@ export async function GET() {
     const authHeader = headersList.get('authorization')
 
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({message: "GET"}, {status: 401})
+      throw error
     }
 
     await resend.emails.send({
