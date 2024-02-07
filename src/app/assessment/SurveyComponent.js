@@ -24,17 +24,33 @@ export default function SurveyComponent({ session }) {
       // Extract number values from results object and store in an array
       const responsesArray = Object.values(results).map(value => parseInt(value, 10))
 
-      const { data, error } = await supabase.from("assessments").insert([
+      // Insert assessment into assessments table
+      const { data: assessmentData, error: assessmentError } = await supabase.from("assessments").insert([
         {
           user_id: user?.id,
           responses: responsesArray,
         },
       ])
 
-      if (error) {
-        console.error("Error inserting assessment:", error.message);
+      if (assessmentError) {
+        throw new Error("Error inserting assessment:", assessmentError.message);
       } else {
-        console.log("Assessment inserted successfully:", data);
+        console.log("Assessment inserted successfully:", assessmentData);
+      }
+
+      // Upsert assessment reminder into assessment_reminders table
+      const { data: reminderData, error: reminderError } = await supabase.from("assessment_reminders").upsert(
+        {
+          user_id: user?.id,
+          last_assessment_at: new Date().toISOString(), // Current timestamp
+          reminder_sent: false,
+        },
+      )
+
+      if (reminderError) {
+        throw new Error("Error upserting assessment reminder:", reminderError.message);
+      } else {
+        console.log("Assessment reminder upserted successfully:", reminderData);
       }
     } catch (error) {
       console.error("Error:", error.message);

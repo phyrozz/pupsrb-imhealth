@@ -89,6 +89,7 @@ export default function SignUpForm() {
         } else {
           await supabase.from('personal_details').insert({
             user_id: data.user.id,
+            email: email,
             first_name: firstName,
             middle_name: middleName,
             last_name: lastName,
