@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Dashboard",
+    "href": "/dashboard"
+  },
+  {
+    "name": "Students",
+    "href": "/students"
+  },
+  {
+    "name": "My Account",
+    "href": "/my-account"
+  }
+]
