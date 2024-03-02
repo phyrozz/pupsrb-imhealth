@@ -57,7 +57,6 @@ export default function AuthForm(props) {
       
     } catch (error) {
       setIsLoading(false)
-      start()
       setError('Login failed.');
     }
   }

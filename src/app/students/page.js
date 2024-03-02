@@ -1,4 +1,5 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Link } from '@nextui-org/react';
+import StudentTable from './StudentTable'
 
 export default function Students() {
 	return (
@@ -28,6 +29,12 @@ export default function Students() {
           </NavbarItem>
         </NavbarContent>
       </Navbar>
+      <div>
+
+      </div>
+      <div className="p-3">
+        <StudentTable />
+      </div>
 		</div>
 	)
 }
