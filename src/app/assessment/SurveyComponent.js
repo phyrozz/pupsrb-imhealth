@@ -7,6 +7,7 @@ import { themeJson } from "./theme"
 import { json } from "./json"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { CircularProgress } from "@nextui-org/react"
+import assessUserAssessment from "./form/apriori"
 
 export default function SurveyComponent({ session }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -51,18 +52,29 @@ export default function SurveyComponent({ session }) {
       // Extract number values from results object and store in an array
       const responsesArray = Object.values(results).map(value => parseInt(value, 10))
 
+      const result = assessUserAssessment(responsesArray)
+
       // Insert assessment into assessments table
       const { data: assessmentData, error: assessmentError } = await supabase.from("assessments").insert([
         {
           user_id: user?.id,
           responses: responsesArray,
         },
+      ]).select()
+
+      const { data: assessmentResult, error: resultError } = await supabase.from("apriori_results").insert([
+        {
+          assessment_id: assessmentData[0].id,
+          user_id: user?.id,
+          apriori_result: result.scenario,
+        },
       ])
 
-      if (assessmentError) {
+      if (assessmentError || resultError) {
         throw new Error("Error inserting assessment:", assessmentError.message)
       } else {
         console.log("Assessment inserted successfully:", assessmentData)
+        console.log("Result inserted successfully", assessmentResult)
       }
 
       // Upsert assessment reminder into assessment_reminders table

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react";
+import ProgramCountTable from "./widgets/by-program-count-table";
 
 export default function Dashboard({ session }) {
 	const user = session?.user
@@ -27,6 +28,10 @@ export default function Dashboard({ session }) {
 				Welcome!
 			</h1>
 			<p className="text-2xl font-bold pb-10">{email}</p>
+      <div className="grid grid-cols-4 gap-3">
+        <ProgramCountTable />
+        
+      </div>
 		</div>
 	)
 }
