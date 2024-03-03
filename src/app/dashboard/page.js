@@ -16,9 +16,9 @@ export default async function DashboardPage() {
   } = await supabase.auth.getSession()
 
   return (
-    <div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen">
+    <>
       <CustomNavbar activeLink="Dashboard" />
       <Dashboard session={ session } />
-    </div>
+    </>
   )
 }

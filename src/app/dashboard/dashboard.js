@@ -28,9 +28,9 @@ export default function Dashboard({ session }) {
 				Welcome!
 			</h1>
 			<p className="text-2xl font-bold pb-10">{email}</p>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <ProgramCountTable />
-        
+
       </div>
 		</div>
 	)

@@ -10,8 +10,8 @@ import { CircularProgress } from "@nextui-org/react"
 import assessUserAssessment from "./form/apriori"
 
 export default function SurveyComponent({ session }) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const supabase = createClientComponentClient(supabaseUrl, supabaseKey)
   
   const user = session?.user
@@ -105,7 +105,6 @@ export default function SurveyComponent({ session }) {
       <div className="h-96 w-screen flex flex-col justify-center items-center text-slate-900">
         You have already answered the form. You can go back to this page two weeks after answering your previous response.
       </div>}
-      
     </>
   )
   
