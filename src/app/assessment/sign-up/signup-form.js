@@ -15,11 +15,13 @@ export default function SignUpForm() {
   const [nameSuffix, setNameSuffix] = React.useState('')
   const [birthDate, setBirthDate] = React.useState('')
   const [program, setProgram] = React.useState('')
+  const [completeProgramName, setCompleteProgramName] = React.useState("")
   const [year, setYear] = React.useState(1)
   const [maritalStatus, setMaritalStatus] = React.useState('')
   const [isWorkingStudent, setIsWorkingStudent] = React.useState(false)
   const [maritalStatuses, setMaritalStatuses] = React.useState([])
   const [programs, setPrograms] = React.useState([])
+  const [passwordStrength, setPasswordStrength] = React.useState("")
 
   const [error, setError] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -50,7 +52,7 @@ export default function SignUpForm() {
       try {
         const { data: programs, error } = await supabase
           .from('programs')
-          .select("id, initial")
+          .select("id, name, initial")
 
         if (error) {
           throw error
@@ -71,7 +73,23 @@ export default function SignUpForm() {
   }
 
   const handleProgramsChange = (e) => {
-    setProgram(e.target.value)
+    const selectedProgramId = e.target.value
+    const selectedProgram = programs.find(program => program.id == selectedProgramId)
+    if (selectedProgram) {
+      setProgram(selectedProgramId)
+      setCompleteProgramName(selectedProgram.name)
+    }
+    console.log(program)
+  }
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value
+    setPassword(value)
+    if (value.length < 8) {
+      setPasswordStrength("weak")
+    } else {
+      setPasswordStrength("strong")
+    }
   }
 
   const handleSignUp = async (e) => {
@@ -172,32 +190,32 @@ export default function SignUpForm() {
                   <Input className="col-span-4" type="date" placeholder="mm / dd / yyyy" label="Birth date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} isRequired />
                   <Select
                     items={programs}
-                    selectedKeys={program}
                     onChange={handleProgramsChange}
                     className="col-span-3"
                     label="Program"
                     placeholder="Choose your program"
+                    description={completeProgramName}
                     isRequired
                   >
-                    {(program) => <SelectItem key={program.id}><p className="text-black">{program.initial}</p></SelectItem>}
+                    {programs.map((program) => <SelectItem key={program.id} value={program.id} className="text-black">{program.initial}</SelectItem>)}
                   </Select>
                   <Input className="col-start-4" type="number" label="Year" value={year} min={1} max={5} onChange={(e) => setYear(e.target.value)} isRequired />
                   <Select
                     items={maritalStatuses}
-                    selectedKeys={maritalStatus}
                     onChange={handleMaritalStatusChange}
                     className="col-span-4"
                     label="Marital Status"
                     placeholder="Choose your status"
                     isRequired
                   >
-                    {(status) => <SelectItem key={status.id}><p className="text-black">{status.status}</p></SelectItem>}
+                    {(status) => <SelectItem key={status.id} value={status.id} className="text-black">{status.status}</SelectItem>}
                   </Select>
                   <Input className="col-span-4" type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} isRequired />
-                  <Input className="col-span-4" type="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} isRequired />
+                  <Input className="col-span-4" type="password" label="Password" value={password} onChange={handlePasswordChange} isRequired />
+                  {passwordStrength && <p className="text-sm">Strength: <b className={passwordStrength === "strong" ? "text-green-600" : "text-red-600"}>{passwordStrength}</b></p>}
                   <Input className="col-span-4" type="password" label="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} isRequired />
                   <RadioGroup
-                  className="col-span-4"
+                    className="col-span-4"
                     label="Are you a working student?"
                     orientation="horizontal"
                     value={isWorkingStudent}
