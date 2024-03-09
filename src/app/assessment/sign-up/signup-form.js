@@ -1,5 +1,6 @@
 import React from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardBody, Divider, Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, CircularProgress, Select, SelectItem, RadioGroup, Radio, Link } from "@nextui-org/react"
 import { ArrowForwardRounded } from "@mui/icons-material"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
@@ -25,7 +26,8 @@ export default function SignUpForm() {
 
   const [error, setError] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(false)
-  const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  // const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  const router = useRouter()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -132,12 +134,15 @@ export default function SignUpForm() {
           setPassword('')
           setConfirmPassword('')
           setError(null)
-          onOpen()
+
+          await supabase.auth.signInWithPassword({ email, password })
+          router.replace("/assessment/form")
+          // onOpen()
         }
       } else {
         setError("Passwords don't match.")
+        setIsLoading(false)
       }
-      setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
       setError('Sign up failed.')
@@ -146,7 +151,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      {/* <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
               <>
@@ -163,7 +168,7 @@ export default function SignUpForm() {
               </>
             )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
       <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-1/2 w-[90vw]'>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}

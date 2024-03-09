@@ -3,6 +3,7 @@
 import React from "react"
 import AuthForm from "./auth-form"
 import { NextUIProvider } from "@nextui-org/react"
+import { Link } from "@nextui-org/react"
 
 
 export default function Home() {
@@ -15,6 +16,9 @@ export default function Home() {
             subText="as Admin"
             signInHref="/dashboard"
           />
+          <div className="absolute bottom-5 left-0 flex flex-col justify-center items-center w-screen">
+            <p><b>Not an admin?</b> <Link href="/assessment/login">Log in as a student</Link></p>
+          </div>
         </div>
       </main>
     </NextUIProvider>
