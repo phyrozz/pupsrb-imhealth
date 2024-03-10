@@ -59,29 +59,21 @@ export default function ByScenariosChart() {
   return (
     <Card isBlurred>
       <CardHeader>
-        <p className="font-thin">By Assessment Results</p>
+        <p className="font-bold">Assessment Results</p>
       </CardHeader>
       <CardBody>
         <Chart 
           options={{
             chart: {
-              type: 'donut',
+              type: 'pie',
             },
             labels: ["None", "Scenario 1", "Scenario 2", "Scenario 3"],
             legend: {
               position: 'bottom',
             },
-            responsive: [{
-              breakpoint: 480,
-              options: {
-                chart: {
-                  width: 200,
-                },
-              }
-            }]
           }}
           series={chartSeries}
-          type="donut"
+          type="pie"
         />
       </CardBody>
     </Card>

@@ -56,7 +56,7 @@ export default function ParticipatedSessionsChart() {
   return (
     <Card isBlurred>
       <CardHeader>
-        <p className="font-thin">Answered Assessments by Sessions</p>
+        <p className="font-bold">Answered Assessments by Sessions</p>
       </CardHeader>
       <CardBody>
         <Chart
@@ -65,14 +65,6 @@ export default function ParticipatedSessionsChart() {
               type: 'bar',
             },
             labels: ["Session 1", "Session 2", "Session 3"],
-            responsive: [{
-              breakpoint: 480,
-              options: {
-                chart: {
-                  width: 200,
-                },
-              }
-            }]
           }}
           series={chartSeries}
           type="bar"

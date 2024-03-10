@@ -58,7 +58,7 @@ export default function ProgramCountTable() {
   return (
     <Card isBlurred>
       <CardHeader>
-        <p className="font-thin">Participating Students</p>
+        <p className="font-bold">Participating Students</p>
       </CardHeader>
       <CardBody>
         <Chart 
@@ -67,14 +67,6 @@ export default function ProgramCountTable() {
               type: 'bar',
             },
             labels: chartLabels,
-            responsive: [{
-              breakpoint: 480,
-              options: {
-                chart: {
-                  width: 200,
-                },
-              }
-            }]
           }}
           series={chartSeries}
           type="bar"
