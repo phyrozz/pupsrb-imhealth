@@ -16,8 +16,8 @@ export default async function Account() {
   } = await supabase.auth.getSession()
 
   return (
-    <div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen">
-    <CustomNavbar activeLink="My Account" />
+    <div className="bg-gradient-to-r from-slate-100 to-slate-300 h-screen">
+      <CustomNavbar activeLink="My Account" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-1/2 w-full md:px-0 px-5">
         <AccountForm session={session} />
       </div>

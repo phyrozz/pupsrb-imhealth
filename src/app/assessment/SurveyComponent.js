@@ -52,7 +52,7 @@ export default function SurveyComponent({ session }) {
       // Extract number values from results object and store in an array
       const responsesArray = Object.values(results).map(value => parseInt(value, 10))
 
-      const result = assessUserAssessment(responsesArray)
+      const result = await assessUserAssessment(user.id, responsesArray)
 
       // Insert assessment into assessments table
       const { data: assessmentData, error: assessmentError } = await supabase.from("assessments").insert([
@@ -62,7 +62,7 @@ export default function SurveyComponent({ session }) {
         },
       ]).select()
 
-      const { data: assessmentResult, error: resultError } = await supabase.from("apriori_results").insert([
+      const { error: resultError } = await supabase.from("apriori_results").insert([
         {
           assessment_id: assessmentData[0].id,
           user_id: user?.id,
@@ -72,9 +72,6 @@ export default function SurveyComponent({ session }) {
 
       if (assessmentError || resultError) {
         throw new Error("Error inserting assessment:", assessmentError.message)
-      } else {
-        console.log("Assessment inserted successfully:", assessmentData)
-        console.log("Result inserted successfully", assessmentResult)
       }
 
       // Upsert assessment reminder into assessment_reminders table
@@ -87,8 +84,6 @@ export default function SurveyComponent({ session }) {
 
       if (reminderError) {
         throw new Error("Error upserting assessment reminder:", reminderError.message)
-      } else {
-        console.log("Assessment reminder upserted successfully:", reminderData)
       }
     } catch (error) {
       console.error("Error:", error.message)
@@ -102,7 +97,7 @@ export default function SurveyComponent({ session }) {
       {isLoading ? <div className="h-96 w-screen flex flex-col justify-center items-center">
         <CircularProgress />
       </div> : allow ? <Survey model={survey} /> : 
-      <div className="h-96 w-screen flex flex-col justify-center items-center text-slate-900">
+      <div className="h-96 w-screen flex flex-col justify-center items-center text-slate-900 text-center px-10">
         You have already answered the form. You can go back to this page two weeks after answering your previous response.
       </div>}
     </>

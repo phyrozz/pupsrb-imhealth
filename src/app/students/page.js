@@ -4,7 +4,7 @@ import CustomNavbar from '../components/navbar';
 
 export default function Students() {
 	return (
-		<div className="bg-gradient-to-r from-slate-50 to-slate-300 h-screen">
+		<div className="bg-gradient-to-r from-slate-50 to-slate-300">
       <CustomNavbar activeLink="Students" />
       <div>
 

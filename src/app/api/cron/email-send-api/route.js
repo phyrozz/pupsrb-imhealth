@@ -37,11 +37,11 @@ export async function GET() {
     for (const user of users) {
       // Send reminder email
       await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: 'team@pupsrc-otms.online',
         to: user.email,
-        subject: 'Assessment Reminder - PUPSRB-iMHealth',
+        subject: 'Assessment Reminder - PUP-iMHealth',
         html: `<div>
-                <h3>PUPSRB-iMHealth</h3>
+                <h3>PUP-iMHealth</h3>
                 <p>Thank you for participating in our on-campus research study. Please answer this assessment form again as your responses will help in our study. Thank you!</p>
                 <a href="https://pupsrb-imhealth.vercel.app/assessment/login">Answer assessment form</a>
               </div>`

@@ -37,7 +37,6 @@ export default function StudentTable() {
         }
 
         setStudents(data)
-        console.log(data)
       } catch (e) {
         console.error(e)
       } finally {
