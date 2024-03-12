@@ -123,7 +123,7 @@ export default function StudentTable() {
                   >
                     <TableCell>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</TableCell>
                     <TableCell>{item.email}</TableCell>
-                    <TableCell>{item.birth_date}</TableCell>
+                    <TableCell>{new Date(item.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
                     <TableCell>{item.programs.initial}</TableCell>
                     <TableCell>{item.year || "-"}</TableCell>
                     <TableCell>{item.marital_statuses.status}</TableCell>

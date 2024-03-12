@@ -48,7 +48,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   }, [getAssessmentHistory])
 
   return (
-    <Card className="h-full w-full">
+    <Card className="h-full w-full overflow-auto">
       {user && (
         <>
           <CardHeader className="flex flex-row justify-between gap-1 text-black font-bold ">
@@ -61,6 +61,44 @@ export default function StudentHistorySidebar({ user, onClose }) {
             <CircularProgress />
           ) : (
             <CardBody>
+              <h1 className="text-xl font-bold pb-3">Personal Details</h1>
+              <Table hideHeader removeWrapper className="pb-5">
+                <TableHeader>
+                  <TableColumn align="end"></TableColumn>
+                  <TableColumn></TableColumn>
+                </TableHeader>
+                <TableBody className="overflow-auto">
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Name</TableCell>
+                    <TableCell>{`${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}`}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Email address</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Birth date</TableCell>
+                    <TableCell>{new Date(user.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Program</TableCell>
+                    <TableCell>{user.programs.initial}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Year</TableCell>
+                    <TableCell>{user.year}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Marital Status</TableCell>
+                    <TableCell>{user.marital_statuses.status}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="text-right font-bold">Working Student?</TableCell>
+                    <TableCell>{user.is_working_student ? "Yes" : "No"}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <h1 className="text-xl font-bold pb-3">Assessment History</h1>
               <Table removeWrapper>
                 <TableHeader>
                   <TableColumn></TableColumn>
@@ -70,7 +108,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
                 <TableBody className="overflow-auto">
                   {assessmentHistory.map((assessment) => (
                     <TableRow key={assessment.id}>
-                      <TableCell>{new Date(assessment.created_at).toLocaleString()}</TableCell>
+                      <TableCell>{new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
                       <TableCell>{assessment.apriori_results && assessment.apriori_results.length > 0 ? assessment.apriori_results[0].apriori_result : 'N/A'}</TableCell>
                       <TableCell>
                         <Chip color="default">{assessment.apriori_results && assessment.apriori_results.length > 0 ? (assessment.apriori_results[0].counseling_statuses ? assessment.apriori_results[0].counseling_statuses.name : 'N/A') : 'N/A'}</Chip>
