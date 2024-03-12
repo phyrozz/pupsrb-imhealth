@@ -1,0 +1,34 @@
+{
+  "questions": [
+    "Little interest or pleasure in doing things?",
+    "Feeling down, depressed, or hopeless?",
+    "Feeling more irritated, grouchy, or angry than usual?",
+    "Sleeping less than usual, but still have a lot of energy?",
+    "Starting lots more projects than usual or doing more risky things than usual?",
+    "Feeling nervous, anxious, frightened, worried, or on edge?",
+    "Feeling panic or being frightened?",
+    "Avoiding situations that make you anxious?",
+    "Unexplained aches and pains (e.g., head, back, joints, abdomen, legs)?",
+    "Feeling that your illnesses are not being taken seriously enough?",
+    "Thoughts of actually hurting yourself?",
+    "Hearing things other people couldn’t hear, such as voices even when no one was around?",
+    "Feeling that someone could hear your thoughts, or that you could hear what another person was thinking?",
+    "Problems with sleep that affected your sleep quality over all?",
+    "Problems with memory (e.g., learning new information) or with location (e.g., finding your way home)?",
+    "Unpleasant thoughts, urges, or images that repeatedly enter your mind?",
+    "Feeling driven to perform certain behaviors or mental acts over and over again?",
+    "Feeling detached or distant from yourself, your body, your physical surroundings, or your memories?",
+    "Not knowing who you really are or what you want out of life?",
+    "Not feeling close to other people or enjoying your relationships with them?",
+    "Drinking at least 4 drinks of any kind of alcohol in a single day?",
+    "Smoking any cigarettes, a cigar, or pipe, or using snuff or chewing tobacco?",
+    "Using any of the following medicines ON YOUR OWN, that is, without a doctor’s prescription, in greater amounts or longer than prescribed [e.g., painkillers (like Vicodin), stimulants (like Ritalin or Adderall), sedatives or tranquilizers (like sleeping pills or Valium), or drugs like marijuana, cocaine or crack, club drugs (like ecstasy), hallucinogens (like LSD), heroin, inhalants or solvents (like glue), or methamphetamine (like speed)]?"
+  ],
+  "responses": [
+    "Not at all",
+    "Slight",
+    "Mild",
+    "Moderate",
+    "Severe"
+  ]
+}

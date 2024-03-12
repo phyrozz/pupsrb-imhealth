@@ -41,7 +41,7 @@ export default function StudentTable() {
       const { data, error, status } = await supabase
         .from("personal_details")
         .select(
-          `email, first_name, middle_name, last_name, name_suffix, created_at, birth_date, programs ( initial ), year, marital_statuses ( status ), is_working_student, profiles ( id, is_student )`
+          `email, first_name, middle_name, last_name, name_suffix, created_at, birth_date, programs ( initial, name ), year, marital_statuses ( status ), is_working_student, profiles ( id, is_student )`
         )
         .eq("profiles.is_student", true)
 
@@ -64,11 +64,11 @@ export default function StudentTable() {
   const handleRowClick = (user) => {
     setSelectedUser(user)
     setIsOpen(true)
-  };
+  }
 
   const handleCloseSidebar = () => {
     setIsOpen(false)
-  };
+  }
 
   return (
     <>
