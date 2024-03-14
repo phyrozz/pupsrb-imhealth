@@ -49,6 +49,7 @@ export default function StudentTable() {
         )
         .eq("profiles.is_student", true)
         .range(start, end)
+        .order('created_at', { ascending: false })
 
       if (searchQuery) {
         query = query.or(

@@ -27,7 +27,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
     } catch (e) {
       console.error(e)
     }
-  }
+  };
 
   useEffect(() => {
     getAssessmentResponse()
@@ -51,6 +51,13 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
     }
   }
 
+  // Flatten questions into a single array
+  const flattenedQuestions = assessmentData.questions.map((question, index) => ({
+    index,
+    question: question.question,
+    domain: question.domain
+  }))
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" size="3xl">
       <ModalContent>
@@ -62,15 +69,17 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
               <>
                 <ModalHeader className="flex flex-col gap-1 text-black">Responses</ModalHeader>
                 <ModalBody>
-                  <Table removeWrapper className="pb-5">
+                  <Table removeWrapper>
                     <TableHeader>
+                      <TableColumn></TableColumn>
                       <TableColumn></TableColumn>
                       <TableColumn>Question</TableColumn>
                       <TableColumn align="end" className="text-right">Answer</TableColumn>
                     </TableHeader>
                     <TableBody className="overflow-auto">
-                      {assessmentData.questions.map((question, index) => (
+                      {flattenedQuestions.map(({ index, question, domain }) => (
                         <TableRow key={index}>
+                          <TableCell><b>{`${domain}`}</b></TableCell>
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{question}</TableCell>
                           <TableCell align="end" className="text-right">
