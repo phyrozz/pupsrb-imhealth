@@ -15,6 +15,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { motion } from "framer-motion"
 import StudentHistorySidebar from "./student-history-sidebar"
 import { SearchIcon } from '../components/search-icon'
+import UploadCSVButton from './import-by-csv'
 
 export default function StudentTable() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -93,7 +94,8 @@ export default function StudentTable() {
         </div>
       ) : (
         <>
-          <div className="w-full pb-3 flex flex-row justify-end">
+          <div className="w-full pb-3 flex flex-row justify-end items-center gap-3">
+            <UploadCSVButton />
             <Input
               isClearable
               variant="bordered"
