@@ -10,5 +10,21 @@
   {
     "name": "My Account",
     "href": "/my-account"
+  },
+  {
+    "name": "Generate Report",
+    "href": "/generate-report",
+    "dropdownItems": [
+      {
+        "name": "Generate by Program",
+        "description": "Generate a report by program such as BSIT or BSECE and export it as .pdf or .csv",
+        "href": "/generate-report/by-program"
+      },
+      {
+        "name": "Generate by Student",
+        "description": "Generate a report by individual student and export it as .pdf or .csv",
+        "href": "/generate-report/by-student"
+      }
+    ]
   }
 ]

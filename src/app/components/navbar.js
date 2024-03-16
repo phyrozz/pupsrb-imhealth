@@ -1,6 +1,14 @@
+"use client"
 import React from 'react'
-import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarContent, NavbarItem, Button, Link, NavbarMenuItem, NavbarMenu } from '@nextui-org/react'
+import { 
+  Navbar, NavbarBrand, NavbarMenuToggle, NavbarContent, NavbarItem, 
+  Button, 
+  Link, 
+  NavbarMenuItem, NavbarMenu,
+  DropdownItem, DropdownTrigger, Dropdown, DropdownMenu
+} from '@nextui-org/react'
 import menuItems from '../data/navbar-menu-items.json'
+import { ChevronDown } from './chevron-icon'
 
 export default function CustomNavbar(props) {
   const activeLink = props.activeLink
@@ -15,11 +23,50 @@ export default function CustomNavbar(props) {
       </NavbarContent>
       
       <NavbarContent className="sm:flex hidden" justify="center">
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem isActive={props.activeLink === item.name ? true : false} key={`${item}-${index}`}>
-            <Link className="w-full" isBlock color="foreground" href={item.href}>{item.name}</Link>
-          </NavbarMenuItem>
-        ))}
+        {menuItems.map((item, index) => {
+          if (typeof item.dropdownItems !== 'undefined') {
+            return (
+              <Dropdown>
+                <NavbarItem>
+                  <DropdownTrigger>
+                    <Button
+                      disableRipple
+                      endContent={<ChevronDown fill="currentColor" size={16} />}
+                      variant="light"
+                      className={props.activeLink === item.name ? "px-2 py-0 text-md font-semibold" : "px-2 py-0 text-md"}
+                      href={item.href}
+                    >
+                      {item.name}
+                    </Button>
+                  </DropdownTrigger>
+                </NavbarItem>
+                <DropdownMenu
+                  aria-label="Dropdown Menu Items"
+                  className="w-[340px]"
+                  itemClasses={{
+                    base: "gap-4",
+                  }}
+                >
+                  {item.dropdownItems.map((dropdownItem, dropdownIndex) => (
+                    <DropdownItem
+                      key={dropdownIndex}
+                      description={dropdownItem.description}
+                      href={dropdownItem.href}
+                    >
+                      {dropdownItem.name}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+            );
+          } else {
+            return (
+              <NavbarMenuItem isActive={props.activeLink === item.name} key={`${item}-${index}`}>
+                <Link className="w-full" isBlock color="foreground" href={item.href}>{item.name}</Link>
+              </NavbarMenuItem>
+            );
+          }
+        })}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
@@ -33,11 +80,11 @@ export default function CustomNavbar(props) {
 
       <NavbarMenu>
         {menuItems.map((item, index) => (
-          <NavbarMenuItem isActive={props.activeLink === item.name ? true : false} key={`${item}-${index}`}>
+          <NavbarMenuItem isActive={props.activeLink === item.name} key={`${item}-${index}`}>
             <Link className="w-full" isBlock color="foreground" href={item.href}>{item.name}</Link>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
     </Navbar>
-  )
+  );
 }

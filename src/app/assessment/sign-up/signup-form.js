@@ -1,7 +1,19 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { Card, CardHeader, CardBody, Divider, Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, CircularProgress, Select, SelectItem, RadioGroup, Radio, Link } from "@nextui-org/react"
+import { 
+  Card, 
+  CardHeader, 
+  CardBody, 
+  Divider, 
+  Input, 
+  Button, 
+  Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, 
+  CircularProgress, 
+  Select, SelectItem, 
+  RadioGroup, Radio, 
+  Link
+} from "@nextui-org/react"
 import { ArrowForwardRounded } from "@mui/icons-material"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
