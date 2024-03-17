@@ -34,10 +34,6 @@ export default function StudentTable() {
 
   const pages = Math.ceil(studentCount / rowsPerPage)
 
-  React.useEffect(() => {
-    getStudents()
-  }, [page, searchQuery])
-
   const getStudents = async () => {
     try {
       const start = (page - 1) * rowsPerPage
@@ -85,6 +81,10 @@ export default function StudentTable() {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value)
   }
+
+  React.useEffect(() => {
+    getStudents()
+  }, [getStudents, page, searchQuery])
 
   return (
     <>

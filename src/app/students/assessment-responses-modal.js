@@ -31,7 +31,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
 
   useEffect(() => {
     getAssessmentResponse()
-  }, [assessmentId])
+  }, [assessmentId, getAssessmentResponse])
 
   const getChipColor = (responseIndex) => {
     const responseValue = responses[responseIndex]

@@ -26,7 +26,7 @@ export default function CustomNavbar(props) {
         {menuItems.map((item, index) => {
           if (typeof item.dropdownItems !== 'undefined') {
             return (
-              <Dropdown>
+              <Dropdown key={index}>
                 <NavbarItem>
                   <DropdownTrigger>
                     <Button
