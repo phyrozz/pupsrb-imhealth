@@ -27,37 +27,41 @@ export default function AuthForm(props) {
 
     e.preventDefault()
     try {
-      const { data: userData, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error: fetchError } = await supabase
+        .from('admins')
+        .select('email')
+        .eq('email', email)
+        .single()
+
+      // if (fetchError) {
+      //   throw fetchError
+      // }
+
+      const isAdmin = data
+
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (authError) {
         throw authError
       }
 
-      const { data, error: fetchError } = await supabase
-        .from('profiles')
-        .select('is_student')
-        .eq('id', userData.user.id)
-        .single()
-
-      if (fetchError) {
-        throw fetchError
-      }
-
-      const isStudent = data && data.is_student;
-
-      if ((checkIfStudent && isStudent) || (!checkIfStudent && !isStudent)) {
+      if ((checkIfStudent && !isAdmin) || (!checkIfStudent && isAdmin)) {
         // Successfully logged in
-        router.replace(signInHref);
+        router.replace(signInHref)
       } else {
         // User is not of the expected role
         // You may also want to sign the user out if needed
-        await supabase.auth.signOut();
-        throw new Error('Invalid role');
+        await supabase.auth.signOut()
+        throw new Error('Invalid role')
       }
       
     } catch (error) {
       setIsLoading(false)
-      setError('Login failed: ' + error.message);
+      if (error.message == "JSON object requested, multiple (or no) rows returned") {
+        setError('Login failed: Invalid role')
+      } else {
+        setError('Login failed: ' + error.message)
+      }
     }
   }
 
