@@ -18,11 +18,11 @@ export const json = {
    {
     "name": "page2",
     "elements": [
-     {
-      "type": "html",
-      "name": "instructions",
-      "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problems?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
-     },
+    //  {
+    //   "type": "html",
+    //   "name": "instructions",
+    //   "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problems?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
+    //  },
      {
       "type": "rating",
       "name": "assessment1",
@@ -606,7 +606,7 @@ export const json = {
      {
       "type": "rating",
       "name": "assessment21",
-      "title": ". Drinking at least 4 drinks of any kind of alcohol in a single day?",
+      "title": "Drinking at least 4 drinks of any kind of alcohol in a single day?",
       "isRequired": true,
       "autoGenerate": false,
       "rateValues": [
