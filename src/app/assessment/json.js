@@ -18,675 +18,923 @@ export const json = {
    {
     "name": "page2",
     "elements": [
-    //  {
-    //   "type": "html",
-    //   "name": "instructions",
-    //   "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problems?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
-    //  },
      {
-      "type": "rating",
-      "name": "assessment1",
-      "title": "Little interest or pleasure in doing things?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel1",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment1",
+        "title": "Little interest or pleasure in doing things?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question1",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment2",
-      "title": "Feeling down, depressed, or hopeless?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel2",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment2",
+        "title": "Feeling down, depressed, or hopeless?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question2",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment3",
-      "title": "Feeling more irritated, grouchy, or angry than usual?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel4",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment3",
+        "title": "Feeling more irritated, grouchy, or angry than usual?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question3",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment4",
-      "title": "Sleeping less than usual, but still have a lot of energy?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel3",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment4",
+        "title": "Sleeping less than usual, but still have a lot of energy?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question4",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment5",
-      "title": "Starting lots more projects than usual or doing more risky things than usual?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel5",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment5",
+        "title": "Starting lots more projects than usual or doing more risky things than usual?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question5",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment6",
-      "title": "Feeling nervous, anxious, frightened, worried, or on edge?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel6",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment6",
+        "title": "Feeling nervous, anxious, frightened, worried, or on edge?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question6",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment7",
-      "title": "Feeling panic or being frightened?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel7",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment7",
+        "title": "Feeling panic or being frightened?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question7",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment8",
-      "title": "Avoiding situations that make you anxious?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel8",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment8",
+        "title": "Avoiding situations that make you anxious?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question8",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment9",
-      "title": "Unexplained aches and pains (e.g., head, back, joints, abdomen, legs)?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel9",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment9",
+        "title": "Unexplained aches and pains (e.g., head, back, joints, abdomen, legs)?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question9",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment10",
-      "title": "Feeling that your illnesses are not being taken seriously enough?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel10",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment10",
+        "title": "Feeling that your illnesses are not being taken seriously enough?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question10",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment11",
-      "title": "Thoughts of actually hurting yourself?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel11",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment11",
+        "title": "Thoughts of actually hurting yourself?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question11",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment12",
-      "title": "Hearing things other people couldn’t hear, such as voices even when no one was around?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel12",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment12",
+        "title": "Hearing things other people couldn’t hear, such as voices even when no one was around?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question12",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment13",
-      "title": "Feeling that someone could hear your thoughts, or that you could hear what another person was thinking?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel13",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment13",
+        "title": "Feeling that someone could hear your thoughts, or that you could hear what another person was thinking?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question13",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment14",
-      "title": "Problems with sleep that affected your sleep quality over all?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel14",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment14",
+        "title": "Problems with sleep that affected your sleep quality over all?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question14",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment15",
-      "title": "Problems with memory (e.g., learning new information) or with location (e.g., finding your way home)?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel15",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment15",
+        "title": "Problems with memory (e.g., learning new information) or with location (e.g., finding your way home)?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question15",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment16",
-      "title": "Unpleasant thoughts, urges, or images that repeatedly enter your mind?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel16",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment16",
+        "title": "Unpleasant thoughts, urges, or images that repeatedly enter your mind?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question16",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment17",
-      "title": "Feeling driven to perform certain behaviors or mental acts over and over again?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel17",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment17",
+        "title": "Feeling driven to perform certain behaviors or mental acts over and over again?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question17",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment18",
-      "title": "Feeling detached or distant from yourself, your body, your physical surroundings, or your memories?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel18",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment18",
+        "title": "Feeling detached or distant from yourself, your body, your physical surroundings, or your memories?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question18",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment19",
-      "title": "Not knowing who you really are or what you want out of life?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel19",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment19",
+        "title": "Not knowing who you really are or what you want out of life?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question19",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment20",
-      "title": "Not feeling close to other people or enjoying your relationships with them?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel20",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment20",
+        "title": "Not feeling close to other people or enjoying your relationships with them?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question20",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment21",
-      "title": "Drinking at least 4 drinks of any kind of alcohol in a single day?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel21",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment21",
+        "title": "Drinking at least 4 drinks of any kind of alcohol in a single day?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question21",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment22",
-      "title": "Smoking any cigarettes, a cigar, or pipe, or using snuff or chewing tobacco?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel22",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment22",
+        "title": "Smoking any cigarettes, a cigar, or pipe, or using snuff or chewing tobacco?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question22",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      },
      {
-      "type": "rating",
-      "name": "assessment23",
-      "title": "Using any of the following medicines ON YOUR OWN, that is, without a doctor’s prescription, in greater amounts or longer than prescribed [e.g., painkillers (like Vicodin), stimulants (like Ritalin or Adderall), sedatives or tranquilizers (like sleeping pills or Valium), or drugs like marijuana, cocaine or crack, club drugs (like ecstasy), hallucinogens (like LSD), heroin, inhalants or solvents (like glue), or methamphetamine (like speed)]?",
-      "isRequired": true,
-      "autoGenerate": false,
-      "rateValues": [
+      "type": "panel",
+      "name": "panel23",
+      "elements": [
        {
-        "value": "0",
-        "text": "Not at all"
+        "type": "rating",
+        "name": "assessment23",
+        "title": "Using any of the following medicines ON YOUR OWN, that is, without a doctor’s prescription, in greater amounts or longer than prescribed [e.g., painkillers (like Vicodin), stimulants (like Ritalin or Adderall), sedatives or tranquilizers (like sleeping pills or Valium), or drugs like marijuana, cocaine or crack, club drugs (like ecstasy), hallucinogens (like LSD), heroin, inhalants or solvents (like glue), or methamphetamine (like speed)]?",
+        "isRequired": true,
+        "autoGenerate": false,
+        "rateValues": [
+         {
+          "value": "0",
+          "text": "Not at all"
+         },
+         {
+          "value": "1",
+          "text": "Slight"
+         },
+         {
+          "value": "2",
+          "text": "Mild"
+         },
+         {
+          "value": "3",
+          "text": "Moderate"
+         },
+         {
+          "value": "4",
+          "text": "Severe"
+         }
+        ]
        },
        {
-        "value": "1",
-        "text": "Slight"
-       },
-       {
-        "value": "2",
-        "text": "Mild"
-       },
-       {
-        "value": "3",
-        "text": "Moderate"
-       },
-       {
-        "value": "4",
-        "text": "Severe"
+        "type": "html",
+        "name": "question23",
+        "html": "<p>During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problem?</p>\n<br />\n<li><b>Not at all: </b>No experience at all within the past two weeks.</li>\n<li><b>Slight: </b>Rare, less than a day or two.</li>\n<li><b>Mild: </b>Several days.</li>\n<li><b>Moderate: </b>More than half the days.</li>\n<li><b>Severe: </b>Nearly every day.</li>"
        }
       ]
      }

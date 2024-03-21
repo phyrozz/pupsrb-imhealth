@@ -2,9 +2,7 @@ import React from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { 
-  Card, 
-  CardHeader, 
-  CardBody, 
+  Card, CardHeader, CardBody, CardFooter,
   Divider, 
   Input, 
   Button, 
@@ -16,6 +14,7 @@ import {
 } from "@nextui-org/react"
 import { ArrowForwardRounded } from "@mui/icons-material"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 
 export default function SignUpForm() {
   // Sign up field states
@@ -26,6 +25,7 @@ export default function SignUpForm() {
   const [middleName, setMiddleName] = React.useState('')
   const [lastName, setLastName] = React.useState('')
   const [nameSuffix, setNameSuffix] = React.useState('')
+  const [studentNumber, setStudentNumber] = React.useState('')
   const [birthDate, setBirthDate] = React.useState('')
   const [program, setProgram] = React.useState('')
   const [completeProgramName, setCompleteProgramName] = React.useState("")
@@ -35,6 +35,9 @@ export default function SignUpForm() {
   const [maritalStatuses, setMaritalStatuses] = React.useState([])
   const [programs, setPrograms] = React.useState([])
   const [passwordStrength, setPasswordStrength] = React.useState("")
+  const [captchaToken, setCaptchaToken] = React.useState()
+  const captcha = React.useRef()
+  const [isCaptchaVisible, setIsCaptchaVisible] = React.useState(false)
 
   const [error, setError] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -112,11 +115,15 @@ export default function SignUpForm() {
 
     try {
       if (password === confirmPassword) {
-        const { data, error } = await supabase.auth.signUp({ email, password, options: {emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/login"} })
+        setIsCaptchaVisible(true)
+        const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/login", captchaToken } })
+        captcha.current.resetCaptcha()
   
         if (data.user && data.user.identities && data.user.identities.length == 0) {
           setError("Account already exists.")
+          setIsCaptchaVisible(false)
         } else if (error) {
+          setIsCaptchaVisible(false)
           throw error
         } else {
           await supabase.from('personal_details').insert({
@@ -126,6 +133,7 @@ export default function SignUpForm() {
             middle_name: middleName,
             last_name: lastName,
             name_suffix: nameSuffix,
+            student_number: studentNumber,
             birth_date: birthDate,
             program_id: program,
             year: year,
@@ -137,6 +145,7 @@ export default function SignUpForm() {
           setMiddleName('')
           setLastName('')
           setNameSuffix('')
+          setStudentNumber('')
           setBirthDate('')
           setProgram('')
           setYear(1)
@@ -154,9 +163,11 @@ export default function SignUpForm() {
       } else {
         setError("Passwords don't match.")
         setIsLoading(false)
+        setIsCaptchaVisible(false)
       }
     } catch (error) {
       setIsLoading(false)
+      setIsCaptchaVisible(false)
       setError('Sign up failed: ' + error.message)
     }
   }
@@ -204,7 +215,8 @@ export default function SignUpForm() {
                   <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="text" label="Middle name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
                   <Input className="md:col-span-2 col-span-4" type="text" label="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} isRequired />
                   <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="text" label="Suffix (Jr., III, etc.)" value={nameSuffix} onChange={(e) => setNameSuffix(e.target.value)} />
-                  <Input className="col-span-4" type="date" placeholder="mm / dd / yyyy" label="Birth date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} isRequired />
+                  <Input className="md:col-span-2 col-span-4" type="text" label="Student number" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} isRequired />
+                  <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="date" placeholder="mm / dd / yyyy" label="Birth date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} isRequired />
                   <Select
                     items={programs}
                     onChange={handleProgramsChange}
@@ -262,6 +274,11 @@ export default function SignUpForm() {
                 </div>
               </form>
             </CardBody>
+            <CardFooter>
+              <div className="w-full flex flex-row justify-center items-center">
+                {isCaptchaVisible && <HCaptcha ref={captcha} sitekey="e6d03459-96a5-40cf-8819-08774369a1ab" onVerify={(token) => { setCaptchaToken(token) }} />}
+              </div>
+            </CardFooter>
           </Card>
         </motion.div>
       </div>
