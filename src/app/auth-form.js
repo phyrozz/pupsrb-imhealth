@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, Input, Divider, Button, Link, CircularProgress } from '@nextui-org/react'
 import { motion } from 'framer-motion'
 import { ArrowForwardRounded } from '@mui/icons-material'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 export default function AuthForm(props) {
   const headerText = props.headerText
@@ -17,6 +18,8 @@ export default function AuthForm(props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState()
+  const captcha = useRef()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -39,7 +42,8 @@ export default function AuthForm(props) {
 
       const isAdmin = data
 
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken } })
+      captcha.current.resetCaptcha()
 
       if (authError) {
         throw authError
@@ -89,6 +93,9 @@ export default function AuthForm(props) {
                 <Input type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} isRequired />
                 <Input type="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} isRequired />
                 <p className="text-center text-red-600 font-bold text-sm">{error}</p>
+              </div>
+              <div className="w-full flex flex-row justify-center items-center pb-3">
+                <HCaptcha ref={captcha} sitekey="e6d03459-96a5-40cf-8819-08774369a1ab" onVerify={(token) => { setCaptchaToken(token) }} />
               </div>
               <Button type="submit" color="primary">
                 {isLoading ? <motion.div
