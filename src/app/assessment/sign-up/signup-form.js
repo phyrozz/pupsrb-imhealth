@@ -36,8 +36,8 @@ export default function SignUpForm() {
   const [programs, setPrograms] = React.useState([])
   const [passwordStrength, setPasswordStrength] = React.useState("")
   const [captchaToken, setCaptchaToken] = React.useState()
+  const [isStudentNumberValid, setIsStudentNumberValid] = React.useState(true)
   const captcha = React.useRef()
-  const [isCaptchaVisible, setIsCaptchaVisible] = React.useState(false)
 
   const [error, setError] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -85,6 +85,14 @@ export default function SignUpForm() {
     fetchPrograms()
   }, [supabase])
 
+  const handleStudentNumberChange = (e) => {
+    const value = e.target.value
+    const regex = /^[0-9]{4}-[0-9]{5}-[A-Z]{2}-[0-9]$/
+
+    setIsStudentNumberValid(regex.test(value))
+    setStudentNumber(value)
+  }
+
   const handleMaritalStatusChange = (e) => {
     setMaritalStatus(e.target.value)
   }
@@ -114,16 +122,13 @@ export default function SignUpForm() {
     setIsLoading(true)
 
     try {
-      if (password === confirmPassword) {
-        setIsCaptchaVisible(true)
+      if (password === confirmPassword && isStudentNumberValid) {
         const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/login", captchaToken } })
         captcha.current.resetCaptcha()
   
         if (data.user && data.user.identities && data.user.identities.length == 0) {
           setError("Account already exists.")
-          setIsCaptchaVisible(false)
         } else if (error) {
-          setIsCaptchaVisible(false)
           throw error
         } else {
           await supabase.from('personal_details').insert({
@@ -161,13 +166,11 @@ export default function SignUpForm() {
           // onOpen()
         }
       } else {
-        setError("Passwords don't match.")
+        setError("Sign up failed.")
         setIsLoading(false)
-        setIsCaptchaVisible(false)
       }
     } catch (error) {
       setIsLoading(false)
-      setIsCaptchaVisible(false)
       setError('Sign up failed: ' + error.message)
     }
   }
@@ -215,7 +218,7 @@ export default function SignUpForm() {
                   <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="text" label="Middle name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
                   <Input className="md:col-span-2 col-span-4" type="text" label="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} isRequired />
                   <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="text" label="Suffix (Jr., III, etc.)" value={nameSuffix} onChange={(e) => setNameSuffix(e.target.value)} />
-                  <Input className="md:col-span-2 col-span-4" type="text" label="Student number" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} isRequired />
+                  <Input className="md:col-span-2 col-span-4" type="text" label="Student number" color={isStudentNumberValid ? "default" : "danger"} value={studentNumber} onChange={handleStudentNumberChange} errorMessage={!isStudentNumberValid && "Invalid student number"} isRequired />
                   <Input className="md:col-span-2 col-span-4 md:col-start-3 col-start-1" type="date" placeholder="mm / dd / yyyy" label="Birth date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} isRequired />
                   <Select
                     items={programs}
@@ -255,6 +258,9 @@ export default function SignUpForm() {
                   </RadioGroup>
                   <p className="text-center text-red-600 font-bold text-sm col-span-4">{error}</p>
                 </div>
+                <div className="w-full flex flex-row justify-center items-center mb-3">
+                  <HCaptcha ref={captcha} sitekey="e6d03459-96a5-40cf-8819-08774369a1ab" onVerify={(token) => { setCaptchaToken(token) }} />
+                </div>
                 <p className="text-sm text-center mb-5">By creating an account, you agree to PUP&apos;s Privacy Statement. Read more at <Link size="sm" href="https://www.pup.edu.ph/privacy/" target="_blank">https://www.pup.edu.ph/privacy/</Link></p>
                 <div className="flex flex-col items-end">
                   <Button type="submit" color="primary">
@@ -274,11 +280,6 @@ export default function SignUpForm() {
                 </div>
               </form>
             </CardBody>
-            <CardFooter>
-              <div className="w-full flex flex-row justify-center items-center">
-                {isCaptchaVisible && <HCaptcha ref={captcha} sitekey="e6d03459-96a5-40cf-8819-08774369a1ab" onVerify={(token) => { setCaptchaToken(token) }} />}
-              </div>
-            </CardFooter>
           </Card>
         </motion.div>
       </div>
