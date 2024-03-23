@@ -29,7 +29,7 @@ export async function GET() {
     const { data: users, error: dbError } = await supabase
       .from("assessment_reminders")
       .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email))`)
-      .lte("last_assessment_at", twoWeeksAgo)
+      .gte("last_assessment_at", twoWeeksAgo)
       .eq("id", "1f759afc-5416-4b56-af51-234dd9d79bca")
 
     if (dbError) {
