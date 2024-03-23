@@ -18,17 +18,17 @@ export async function GET() {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey)
+    // const { data: users, error: dbError } = await supabase
+    //   .from("assessment_reminders")
+    //   .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email))`)
+    //   .lte("last_assessment_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)) // Two weeks ago
+    //   .eq("reminder_sent", false)
+
     const { data: users, error: dbError } = await supabase
       .from("assessment_reminders")
-      .select(`
-        assessment_reminders.*,
-        personal_details.email
-      `)
-      .lte("assessment_reminders.last_assessment_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)) // Two weeks ago
-      .eq("assessment_reminders.reminder_sent", false)
-      .join("personal_details", { 
-        on: "assessment_reminders.user_id:personal_details.user_id" 
-    });
+      .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email))`)
+      .lte("last_assessment_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)) // Two weeks ago
+      .eq("id", "1f759afc-5416-4b56-af51-234dd9d79bca")
 
     if (dbError) {
       throw dbError
@@ -51,7 +51,7 @@ export async function GET() {
       await supabase
         .from("assessment_reminders")
         .update({ reminder_sent: true })
-        .eq("user_id", user.user_id)
+        .eq("user_id", user.id)
     }
 
     return NextResponse.json({ message: "Reminder emails sent successfully" }, { status: 200 })

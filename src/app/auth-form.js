@@ -18,17 +18,30 @@ export default function AuthForm(props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [showCaptcha, setShowCaptcha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState()
   const captcha = useRef()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClientComponentClient({supabaseUrl: supabaseUrl, supabaseKey: supabaseKey})
+  const supabase = createClientComponentClient({ supabaseUrl: supabaseUrl, supabaseKey: supabaseKey })
 
   const handleLogin = async (e) => {
-    setIsLoading(true)
-
     e.preventDefault()
+    setIsLoading(true)
+    setShowCaptcha(true)
+
+    try {
+      await captcha.current.execute()
+    } catch (error) {
+      setIsLoading(false)
+      console.error('CAPTCHA execution error:', error)
+    }
+  }
+
+  const handleCaptchaVerify = async (token) => {
+    setIsLoading(true)
+    setCaptchaToken(token)
     try {
       const { data, error: fetchError } = await supabase
         .from('admins')
@@ -36,14 +49,9 @@ export default function AuthForm(props) {
         .eq('email', email)
         .single()
 
-      // if (fetchError) {
-      //   throw fetchError
-      // }
-
       const isAdmin = data
 
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken } })
-      captcha.current.resetCaptcha()
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: token } })
 
       if (authError) {
         throw authError
@@ -58,10 +66,9 @@ export default function AuthForm(props) {
         await supabase.auth.signOut()
         throw new Error('Invalid role')
       }
-      
     } catch (error) {
       setIsLoading(false)
-      if (error.message == "JSON object requested, multiple (or no) rows returned") {
+      if (error.message === 'JSON object requested, multiple (or no) rows returned') {
         setError('Login failed: Invalid role')
       } else {
         setError('Login failed: ' + error.message)
@@ -95,24 +102,36 @@ export default function AuthForm(props) {
                 <p className="text-center text-red-600 font-bold text-sm">{error}</p>
               </div>
               <div className="w-full flex flex-row justify-center items-center pb-3">
-                <HCaptcha ref={captcha} sitekey="e6d03459-96a5-40cf-8819-08774369a1ab" onVerify={(token) => { setCaptchaToken(token) }} />
+                {showCaptcha && (
+                  <HCaptcha
+                    ref={captcha}
+                    sitekey="e6d03459-96a5-40cf-8819-08774369a1ab"
+                    onVerify={handleCaptchaVerify}
+                  />
+                )}
               </div>
               <Button type="submit" color="primary">
-                {isLoading ? <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0, 0.71, 0.2, 1.01]
-                  }}
-                >
-                  <CircularProgress />
-                </motion.div> : <ArrowForwardRounded />}
+                {isLoading ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: [0, 0.71, 0.2, 1.01]
+                    }}
+                  >
+                    <CircularProgress />
+                  </motion.div>
+                ) : (
+                  <ArrowForwardRounded />
+                )}
               </Button>
             </form>
-            {signUpHref ? <div className="text-center mt-6 mb-3">
+            {signUpHref ? (
+              <div className="text-center mt-6 mb-3">
                 <Link href={signUpHref}>Create an account</Link>
-            </div> : null}
+              </div>
+            ) : null}
           </CardBody>
         </Card>
       </motion.div>
