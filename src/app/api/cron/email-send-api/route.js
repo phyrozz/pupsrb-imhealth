@@ -17,43 +17,36 @@ export async function GET() {
       throw new Error("Invalid authorization")
     }
 
-    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
-
     const supabase = createClient(supabaseUrl, supabaseKey)
-    // const { data: users, error: dbError } = await supabase
-    //   .from("assessment_reminders")
-    //   .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email))`)
-    //   .lte("last_assessment_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)) // Two weeks ago
-    //   .eq("reminder_sent", false)
-
+    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
     const { data: users, error: dbError } = await supabase
       .from("assessment_reminders")
-      .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email))`)
-      .gte("last_assessment_at", twoWeeksAgo)
+      .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email, first_name))`)
+      .lte("last_assessment_at", twoWeeksAgo)
       .eq("id", "1f759afc-5416-4b56-af51-234dd9d79bca")
 
     if (dbError) {
       throw dbError
     }
 
-    for (const user of users) {
-      // Send reminder email
-      await resend.emails.send({
-        from: 'team@pupsrc-otms.online',
-        to: user.email,
-        subject: 'Assessment Reminder - PUP-iMHealth',
-        html: `<div>
+    const emailsToSend = users.map((user) => ({
+      from: "team@pupsrc-otms.online",
+      to: [user.profiles.personal_details[0].email],
+      subject: "Assessment Reminder - PUP-iMHealth",
+      html: `<div>
                 <h3>PUP-iMHealth</h3>
+                <p><b>Hi, ${user.profiles.personal_details[0].first_name}!</b></p>
                 <p>Thank you for participating in our on-campus research study. Please answer this assessment form again as your responses will help in our study. Thank you!</p>
                 <a href="https://pupsrb-imhealth.vercel.app/assessment/login">Answer assessment form</a>
-              </div>`
-      })
+              </div>`,
+    }))
 
-      // Update reminder_sent flag in the database
-      await supabase
-        .from("assessment_reminders")
-        .update({ reminder_sent: true })
-        .eq("user_id", user.id)
+    // Send batch of reminder emails
+    await resend.batch.send(emailsToSend)
+
+    // Update reminder_sent flag in the database for each user
+    for (const user of users) {
+      await supabase.from("assessment_reminders").update({ reminder_sent: true }).eq("id", user.id)
     }
 
     return NextResponse.json({ message: "Reminder emails sent successfully" }, { status: 200 })
