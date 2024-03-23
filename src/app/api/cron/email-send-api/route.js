@@ -23,18 +23,25 @@ export async function GET() {
       .from("assessment_reminders")
       .select(`id, created_at, last_assessment_at, reminder_sent, profiles (personal_details (email, first_name))`)
       .lte("last_assessment_at", twoWeeksAgo)
-      .eq("id", "1f759afc-5416-4b56-af51-234dd9d79bca")
+      .eq("reminder_sent", false)
 
     if (dbError) {
       throw dbError
     }
+
+    // Update reminder_sent flags on all users whose last assessment was two weeks ago
+    await supabase
+      .from("assessment_reminders")
+      .update({ reminder_sent: true })
+      .lte("last_assessment_at", twoWeeksAgo)
+      .eq("reminder_sent", false)
 
     const emailsToSend = users.map((user) => ({
       from: "team@pupsrc-otms.online",
       to: [user.profiles.personal_details[0].email],
       subject: "Assessment Reminder - PUP-iMHealth",
       html: `<div>
-                <h3>PUP-iMHealth</h3>
+                <h2>PUP-iMHealth</h2>
                 <p><b>Hi, ${user.profiles.personal_details[0].first_name}!</b></p>
                 <p>Thank you for participating in our on-campus research study. Please answer this assessment form again as your responses will help in our study. Thank you!</p>
                 <a href="https://pupsrb-imhealth.vercel.app/assessment/login">Answer assessment form</a>
@@ -43,11 +50,6 @@ export async function GET() {
 
     // Send batch of reminder emails
     await resend.batch.send(emailsToSend)
-
-    // Update reminder_sent flag in the database for each user
-    for (const user of users) {
-      await supabase.from("assessment_reminders").update({ reminder_sent: true }).eq("id", user.id)
-    }
 
     return NextResponse.json({ message: "Reminder emails sent successfully" }, { status: 200 })
   } catch (error) {
