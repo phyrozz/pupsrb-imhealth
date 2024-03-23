@@ -36,19 +36,27 @@ export async function GET() {
       .lte("last_assessment_at", twoWeeksAgo)
       .eq("reminder_sent", false)
 
-    const emailsToSend = users.map((user) => ({
-      from: "team@pupsrc-otms.online",
-      to: [user.profiles.personal_details[0].email],
-      subject: "Assessment Reminder - PUP-iMHealth",
-      html: `<div>
-                <h2>PUP-iMHealth</h2>
-                <p><b>Hi, ${user.profiles.personal_details[0].first_name}!</b></p>
-                <p>Thank you for participating in our on-campus research study. Please answer this assessment form again as your responses will help in our study. Thank you!</p>
-                <a href="https://pupsrb-imhealth.vercel.app/assessment/login">Answer assessment form</a>
-              </div>`,
-    }))
+    const emailsToSend = []
 
-    // Send batch of reminder emails
+    for (const user of users) {
+      // Check if user has personal details and email
+      if (user.profiles && user.profiles.personal_details && user.profiles.personal_details.length > 0) {
+        const email = user.profiles.personal_details[0].email
+        const firstName = user.profiles.personal_details[0].first_name || 'there' // Default to 'there' if first name is not available
+        emailsToSend.push({
+          from: "team@pupsrc-otms.online",
+          to: [email],
+          subject: "Assessment Reminder - PUP-iMHealth",
+          html: `<div>
+                    <h2>PUP-iMHealth</h2>
+                    <p><b>Hi, ${firstName}!</b></p>
+                    <p>Thank you for participating in our on-campus research study. Please answer this assessment form again as your responses will help in our study. Thank you!</p>
+                    <a href="https://pupsrb-imhealth.vercel.app/assessment/login">Answer assessment form</a>
+                  </div>`,
+        })
+      }
+    }
+
     await resend.batch.send(emailsToSend)
 
     return NextResponse.json({ message: "Reminder emails sent successfully" }, { status: 200 })
