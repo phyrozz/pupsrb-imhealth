@@ -31,7 +31,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
 
   useEffect(() => {
     getAssessmentResponse()
-  }, [assessmentId, getAssessmentResponse])
+  }, [assessmentId])
 
   const getChipColor = (responseIndex) => {
     const responseValue = responses[responseIndex]
@@ -59,7 +59,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
   }))
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" size="3xl">
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" size="3xl" aria-label="Student Responses Modal">
       <ModalContent>
         {onClose => (
           <>
@@ -69,7 +69,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
               <>
                 <ModalHeader className="flex flex-col gap-1 text-black">Responses</ModalHeader>
                 <ModalBody>
-                  <Table removeWrapper>
+                  <Table removeWrapper aria-label="Responses Table">
                     <TableHeader>
                       <TableColumn></TableColumn>
                       <TableColumn></TableColumn>

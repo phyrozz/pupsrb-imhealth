@@ -65,10 +65,10 @@ export default function StudentHistorySidebar({ user, onClose }) {
   return (
     <>
       <AssessmentResponsesModal assessmentId={selectedAssessment} isOpen={isOpen} onOpenChange={onOpenChange} />
-      <Card className="h-full w-full overflow-auto">
+      <Card className="h-full w-full overflow-auto" aria-label="Sidebar Card">
         {user && (
           <>
-            <CardHeader className="flex flex-row justify-between gap-1 text-black font-bold ">
+            <CardHeader className="flex flex-row justify-between gap-1 text-black font-bold" aria-label="Sidebar Card Header">
               {`${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}`}
               <Button isIconOnly color="primary" variant="light" onClick={onClose}>
                 X
@@ -77,14 +77,14 @@ export default function StudentHistorySidebar({ user, onClose }) {
             {isLoading ? (
               <CircularProgress />
             ) : (
-              <CardBody>
+              <CardBody aria-label="Sidebar Card Body">
                 <h1 className="text-xl font-bold pb-3">Personal Details</h1>
-                <Table hideHeader removeWrapper className="pb-5">
-                  <TableHeader>
-                    <TableColumn></TableColumn>
-                    <TableColumn></TableColumn>
+                <Table hideHeader removeWrapper className="pb-5" aria-label="Student Details Table">
+                  <TableHeader aria-label="Student Details Table Header">
+                    <TableColumn aria-label="Details"></TableColumn>
+                    <TableColumn aria-label="Details Value"></TableColumn>
                   </TableHeader>
-                  <TableBody className="overflow-auto">
+                  <TableBody className="overflow-auto" aria-label="Student Details Table Body">
                     {[
                       { label: "Name", value: `${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}` },
                       { label: "Email address", value: user.email },
@@ -102,13 +102,13 @@ export default function StudentHistorySidebar({ user, onClose }) {
                   </TableBody>
                 </Table>
                 <h1 className="text-xl font-bold pb-3">Assessment History</h1>
-                <Table removeWrapper selectionMode="single">
-                  <TableHeader>
+                <Table removeWrapper selectionMode="single" aria-label="Assessment History Table">
+                  <TableHeader aria-label="Assessment History Table Header">
                     <TableColumn></TableColumn>
                     <TableColumn>Result</TableColumn>
                     <TableColumn>Counseling Status</TableColumn>
                   </TableHeader>
-                  <TableBody className="overflow-auto" emptyContent={"No answered assessment."}>
+                  <TableBody className="overflow-auto" emptyContent={"No answered assessment."} aria-label="Assessment History Table Body">
                     {assessmentHistory.map((assessment) => (
                       <TableRow key={assessment.id} onClick={() => handleRowClick(assessment.id)}>
                         <TableCell>{new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>

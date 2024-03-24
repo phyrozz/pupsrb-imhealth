@@ -84,7 +84,7 @@ export default function StudentTable() {
 
   React.useEffect(() => {
     getStudents()
-  }, [getStudents, page, searchQuery])
+  }, [page, searchQuery])
 
   return (
     <>
