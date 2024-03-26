@@ -14,7 +14,7 @@ export default function UploadCSVButton() {
     const file = event.target.files[0]
 
     if (!file) {
-      // No file selected, do nothing
+      // No file selected, do nothingzz
       return
     }
 
@@ -203,8 +203,8 @@ export default function UploadCSVButton() {
   }
 
   return (
-    <div>
-      <label className="bg-teal-500 hover:bg-teal-600 text-white px-5 py-4 transition-all rounded-xl cursor-pointer shadow-xl" htmlFor="upload-input">
+    <span className="w-full">
+      <label className="text-black w-full" htmlFor="upload-input">
         Import (.csv)
       </label>
       <input 
@@ -257,6 +257,6 @@ export default function UploadCSVButton() {
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </span>
   )
 }

@@ -9,13 +9,16 @@ import {
   TableCell, 
   Pagination, 
   CircularProgress, 
-  Input
+  Input,
+  Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
+  Button
 } from '@nextui-org/react'
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { motion } from "framer-motion"
 import StudentHistorySidebar from "./student-history-sidebar"
 import { SearchIcon } from '../components/search-icon'
 import UploadCSVButton from './import-by-csv'
+import IconThreeDotsVertical from '../components/three-dots-vertical-icon'
 
 export default function StudentTable() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -95,7 +98,6 @@ export default function StudentTable() {
       ) : (
         <>
           <div className="w-full pb-3 flex flex-row justify-end items-center gap-3">
-            <UploadCSVButton />
             <Input
               isClearable
               variant="bordered"
@@ -113,6 +115,19 @@ export default function StudentTable() {
                 <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
               }
             />
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="light">
+                  <IconThreeDotsVertical />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Table Options Dropdown">
+                <DropdownItem key="uploadCsv">
+                  <UploadCSVButton />
+                </DropdownItem>
+                <DropdownItem key="hide">Hide</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
           <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
             <motion.div
