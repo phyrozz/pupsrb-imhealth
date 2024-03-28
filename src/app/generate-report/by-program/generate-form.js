@@ -1,9 +1,11 @@
 "use client"
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import generatePDF from '../generate-pdf'
+import { pdf } from '@react-pdf/renderer'
+import { saveAs } from 'file-saver'
+import GeneratePDF from './generate-pdf'
 
 export default function ByProgramForm() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -20,6 +22,7 @@ export default function ByProgramForm() {
   const [selectedCounselingStatuses, setselectedCounselingStatuses] = React.useState("")
   const [selectedAssessmentResults, setSelectedAssessmentResults] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(true)
+  const [popoverMessage, setPopoverMessage] = React.useState(null)
 
   const yearItems = ["1", "2", "3", "4", "5"]
   const assessmentResultItems = ["0", "1", "2", "3"]
@@ -91,6 +94,7 @@ export default function ByProgramForm() {
     let years = selectedYears.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let counselingStatuses = selectedCounselingStatuses.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let assessmentResults = selectedAssessmentResults.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
+    let filters = []
 
     try {
       let query = supabase
@@ -113,10 +117,22 @@ export default function ByProgramForm() {
           assessment_scenarios!inner(id, name), 
           counseling_statuses!inner(id, name)`)
   
-      if (programs.length) { query = query.in("profiles.personal_details.programs.id", programs) }
-      if (years.length) { query = query.in("profiles.personal_details.year", years) }
-      if (counselingStatuses.length) { query = query.in("counseling_statuses.id", counselingStatuses) }
-      if (assessmentResults.length) { query = query.in("assessment_scenarios.id", assessmentResults) }
+      if (programs.length) { 
+        query = query.in("profiles.personal_details.programs.id", programs) 
+        filters.push(programs.join(", "))
+      }
+      if (years.length) { 
+        query = query.in("profiles.personal_details.year", years) 
+        filters.push(years.join(", "))
+      }
+      if (counselingStatuses.length) { 
+        query = query.in("counseling_statuses.id", counselingStatuses)
+        filters.push(counselingStatuses.join(", "))
+      }
+      if (assessmentResults.length) { 
+        query = query.in("assessment_scenarios.id", assessmentResults)
+        filters.push(assessmentResults.join(", ")) 
+      }
       
       if (minDate && maxDate) { 
         query = query.gte("created_at", minDate)
@@ -127,8 +143,34 @@ export default function ByProgramForm() {
       const { data: reportData, error } = await query
   
       if (error) { throw error }
-  
-      generatePDF(reportData)
+
+      const { data: scenarioData, error: scenarioError } = await supabase
+        .from('assessment_scenarios')
+        .select('name, description')
+        .order('id');
+
+      if (scenarioError) {
+        throw scenarioError
+      }
+      
+      if (reportData.length) {
+        setPopoverMessage("Generating PDF...")
+        await pdf(<GeneratePDF
+          reports={reportData} 
+          scenarioData={scenarioData} 
+          startDate={minDate}
+          endDate={maxDate}
+          filters={filters}
+        />).toBlob()
+        .then((blob) => {
+          saveAs(blob, "report.pdf");
+        })
+        setPopoverMessage(null)
+      } else {
+        setPopoverMessage("No results found. Cannot generate PDF.")
+      }
+      
+
     } catch (error) {
       console.error(error)
     }
@@ -293,7 +335,14 @@ export default function ByProgramForm() {
           </CardBody>
           <CardFooter>
             <div className="flex w-full justify-end">
-              <Button type="submit" variant="shadow" color="primary">Generate</Button>
+              <Popover>
+                <PopoverTrigger>
+                  <Button type="submit" variant="shadow" color="primary">Generate</Button>
+                </PopoverTrigger>
+                {<PopoverContent hidden={!popoverMessage}>
+                  {popoverMessage}
+                </PopoverContent>}
+              </Popover>
             </div>
           </CardFooter>
         </form>

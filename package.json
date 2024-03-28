@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ag-media/react-pdf-table": "^1.0.1",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -18,11 +19,15 @@
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
     "@nextui-org/react": "^2.2.9",
+    "@nextui-org/use-infinite-scroll": "^2.1.2",
+    "@react-pdf/renderer": "^3.4.1",
+    "@react-stately/data": "^3.11.2",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.2",
     "apexcharts": "^3.47.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.0.3",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",

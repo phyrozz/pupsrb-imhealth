@@ -19,6 +19,7 @@ import StudentHistorySidebar from "./student-history-sidebar"
 import { SearchIcon } from '../components/search-icon'
 import UploadCSVButton from './import-by-csv'
 import IconThreeDotsVertical from '../components/three-dots-vertical-icon'
+import IconFileImport from '../components/file-import'
 
 export default function StudentTable() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -82,8 +83,13 @@ export default function StudentTable() {
   }
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value)
+    const { value } = e.target
+    setSearchQuery(value)
+    if (value.trim() !== "") {
+      setPage(1)
+    }
   }
+  
 
   React.useEffect(() => {
     getStudents()
@@ -100,31 +106,26 @@ export default function StudentTable() {
           <div className="w-full pb-3 flex flex-row justify-end items-center gap-3">
             <Input
               isClearable
-              variant="bordered"
+              variant="faded"
               radius="md"
               className="w-96"
-              classNames={{
-                inputWrapper: [
-                  "border-slate-50"
-                ]
-              }}
               placeholder="Search for student..."
               value={searchQuery}
               onChange={handleSearch}
               startContent={
                 <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
               }
+              onClear={() => setSearchQuery("")}
             />
-            <Dropdown>
+            
+            <Dropdown closeOnSelect={false}>
               <DropdownTrigger>
-                <Button variant="light">
+                <Button variant="light" isIconOnly>
                   <IconThreeDotsVertical />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Table Options Dropdown">
-                <DropdownItem key="uploadCsv">
-                  <UploadCSVButton />
-                </DropdownItem>
+                <DropdownItem key="import"><UploadCSVButton /></DropdownItem>
                 <DropdownItem key="hide">Hide</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -149,7 +150,7 @@ export default function StudentTable() {
                       isCompact
                       showControls
                       showShadow
-                      color="secondary"
+                      color="primary"
                       page={page}
                       total={pages}
                       onChange={(page) => setPage(page)}

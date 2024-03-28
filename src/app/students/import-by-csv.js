@@ -203,20 +203,7 @@ export default function UploadCSVButton() {
   }
 
   return (
-    <span className="w-full">
-      <label className="text-black w-full" htmlFor="upload-input">
-        Import (.csv)
-      </label>
-      <input 
-        id="upload-input"
-        style={{
-          visibility: 'hidden',
-          position: 'absolute',
-        }} 
-        type="file" 
-        accept=".csv" 
-        onChange={handleFileUpload} 
-      />
+    <>
       <Modal isOpen={isOpen} onClose={onOpenChange} scrollBehavior="inside" size="5xl">
         <ModalContent>
           {(onClose) => (
@@ -257,6 +244,24 @@ export default function UploadCSVButton() {
           )}
         </ModalContent>
       </Modal>
-    </span>
+      <button className="bg-slate-500 p-3 rounded-lg shadow-lg shadow-slate-500">
+        <label className="text-white text-sm cursor-pointer" htmlFor="upload-input">
+          Import (.csv)
+        </label>
+        <input 
+          id="upload-input"
+          style={{
+            visibility: 'hidden',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }} 
+          type="file" 
+          accept=".csv" 
+          onChange={handleFileUpload} 
+        />
+      </button>
+    </>
+    
   )
 }
