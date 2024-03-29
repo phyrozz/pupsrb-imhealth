@@ -196,7 +196,7 @@ export default function StudentTable() {
                   duration: 0.5,
                   ease: [0, 0.71, 0.2, 1.01],
                 }}
-                className="md:col-span-4 col-span-12 md:static fixed md:w-full w-[94.5vw]"
+                className="md:col-span-4 col-span-12 md:static fixed md:h-full h-[80vh] md:w-full w-[94.5vw]"
               >
                 <StudentHistorySidebar
                   user={selectedUser}

@@ -39,6 +39,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   const [isEditMode, setIsEditMode] = React.useState(false)
   const [counselingStatuses, setCounselingStatuses] = React.useState([])
   const [currentUserRole, setCurrentUserRole] = React.useState("")
+  const [assessmentScenarios, setAssessmentScenarios] = React.useState([])
 
   const getAssessmentHistory = React.useCallback(async () => {
     try {
@@ -48,24 +49,45 @@ export default function StudentHistorySidebar({ user, onClose }) {
           `id, created_at, user_id, responses, apriori_results (id, apriori_result, counseling_statuses (id, name))`
         )
         .eq("user_id", user.profiles.id)
-
+  
       const { data: counselingData } = await supabase
         .from("counseling_statuses")
         .select(`id, name`)
       
       setUserId(user.profiles.id)
       setCounselingStatuses(counselingData)
-
+  
       if (error && status !== 406) {
         throw error
       }
-
-      setAssessmentHistory(data)
+  
+      // Map through data and add color key to each assessment object
+      const assessmentsWithColor = data.map(assessment => ({
+        ...assessment,
+        color: getColorForAprioriResult(assessment.apriori_results[0].apriori_result)
+      }))
+  
+      setAssessmentHistory(assessmentsWithColor)
       setIsLoading(false)
     } catch (e) {
       console.error(e)
     }
   }, [supabase, user.profiles.id])
+
+  const getColorForAprioriResult = (result) => {
+    switch (result) {
+      case 0:
+        return "default"
+      case 1:
+        return "primary"
+      case 2:
+        return "warning"
+      case 3:
+        return "danger"
+      default:
+        return "default"
+    }
+  }
 
   const getCurrentUserRole = async () => {
     try {
@@ -84,7 +106,30 @@ export default function StudentHistorySidebar({ user, onClose }) {
     }
   }
 
+  const getAssessmentScenarios = async () => {
+    try {
+      const { data: scenarioData, error: scenarioError } = await supabase
+        .from("assessment_scenarios")
+        .select("id, name, description")
+        .order("id")
+  
+      if (scenarioError) { throw scenarioError }
+  
+      const colors = ["default", "primary", "warning", "danger"]
+  
+      const scenariosWithColor = scenarioData.map((scenario, index) => ({
+        ...scenario,
+        color: colors[index % colors.length],
+      }))
+  
+      setAssessmentScenarios(scenariosWithColor)
+    } catch (error) {
+      console.error(error)
+    }
+  }  
+
   React.useEffect(() => {
+    getAssessmentScenarios()
     getAssessmentHistory()
     getCurrentUserRole()
   }, [getAssessmentHistory])
@@ -248,7 +293,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
                     {assessmentHistory.map((assessment) => (
                       <TableRow key={assessment.id} onClick={() => handleRowClick(assessment.id)}>
                         <TableCell>{new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
-                        <TableCell>{assessment.apriori_results && assessment.apriori_results.length > 0 ? assessment.apriori_results[0].apriori_result : 'N/A'}</TableCell>
+                        <TableCell><Chip radius="full" color={assessment.color}>{assessment.apriori_results && assessment.apriori_results.length > 0 ? assessment.apriori_results[0].apriori_result : 'N/A'}</Chip></TableCell>
                         <TableCell>
                           {isEditMode ? (
                             <Select
@@ -268,7 +313,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
                     ))}
                   </TableBody>
                 </Table>
-                <div className="w-full flex justify-start items-center mt-4">
+                <div className="w-full flex justify-end items-center my-4">
                   <Popover>
                     <PopoverTrigger>
                       <Button variant="shadow" color="primary" onClick={handleGenerateButton}>Generate Report</Button>
@@ -278,6 +323,25 @@ export default function StudentHistorySidebar({ user, onClose }) {
                     </PopoverContent>}
                   </Popover>
                 </div>
+                <div className="w-full flex flex-row justify-between items-center pb-1">
+                  <h1 className="text-xl font-bold pb-3">Result Interpretations</h1>
+                </div>
+                <Table removeWrapper selectionMode="single" aria-label="Result Interpretations Table">
+                  <TableHeader aria-label="Result Interpretations Table Header">
+                    <TableColumn>Result</TableColumn>
+                    <TableColumn>Scenario</TableColumn>
+                    <TableColumn>Description</TableColumn>
+                  </TableHeader>
+                  <TableBody className="overflow-auto" aria-label="Result Interpretations Table Body">
+                    {assessmentScenarios.map((scenario) => (
+                      <TableRow key={scenario.id}>
+                        <TableCell>{scenario.id}</TableCell>
+                        <TableCell><Chip size="sm" radius="full" color={scenario.color}>{scenario.name}</Chip></TableCell>
+                        <TableCell>{scenario.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardBody>
             )}
           </>
