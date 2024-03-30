@@ -11,7 +11,8 @@ import {
   CircularProgress, 
   Input,
   Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
-  Button
+  Button,
+  Autocomplete, AutocompleteItem
 } from '@nextui-org/react'
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { motion } from "framer-motion"
@@ -20,6 +21,7 @@ import { SearchIcon } from '../components/search-icon'
 import UploadCSVButton from './import-by-csv'
 import IconThreeDotsVertical from '../components/three-dots-vertical-icon'
 import IconFileImport from '../components/file-import'
+import IconFiltering from '../components/filter-icon'
 
 export default function StudentTable() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -34,42 +36,50 @@ export default function StudentTable() {
   const [selectedUser, setSelectedUser] = React.useState(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [searchQuery, setSearchQuery] = React.useState('')
+  const [filterBySession, setFilterBySession] = React.useState(1)
+  const [filterByProgram, setFilterByProgram] = React.useState("")
+  const [programs, setPrograms] = React.useState([])
   const rowsPerPage = 20
 
   const pages = Math.ceil(studentCount / rowsPerPage)
 
   const getStudents = async () => {
     try {
-      const start = (page - 1) * rowsPerPage
-      const end = start + rowsPerPage
+      const { data, error } = await supabase
+        .rpc('get_users_with_multiple_assessments', { 
+          result_count: filterBySession, 
+          selected_program_initial: filterByProgram,
+          search_query: searchQuery,
+          page_size: rowsPerPage,
+          page_number: page
+      })
 
-      let query = supabase.from("personal_details")
-        .select(
-          `email, first_name, middle_name, last_name, name_suffix, created_at, birth_date, programs ( initial, name ), year, marital_statuses ( status ), is_working_student, profiles ( id, is_student )`,
-          { count: 'exact' }
-        )
-        .eq("profiles.is_student", true)
-        .range(start, end)
-        .order('created_at', { ascending: false })
-
-      if (searchQuery) {
-        query = query.or(
-          `first_name.ilike.%${searchQuery}%, last_name.ilike.%${searchQuery}%, email.ilike.%${searchQuery}%`
-        )
-      }        
-
-      const { data, count, error, status } = await query
-
-      if (error && status !== 406) {
+      console.log(data)
+      if (error) {
         throw error
       }
 
-      setStudentCount(count)
+      setStudentCount(data[0].total_count)
       setStudents(data)
     } catch (e) {
+      setStudents([])
       console.error(e)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const getPrograms = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("programs")
+        .select(`initial`)
+      
+      if (error) { throw error }
+
+      setPrograms(data)
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -90,10 +100,18 @@ export default function StudentTable() {
     }
   }
   
+  const handleBySessionAutocompleteChange = (key) => {
+    setFilterBySession(key)
+  }
+
+  const handleByProgramAutocompleteChange = (key) => {
+    setFilterByProgram(key)
+  }
 
   React.useEffect(() => {
+    getPrograms()
     getStudents()
-  }, [page, searchQuery])
+  }, [page, searchQuery, filterBySession, filterByProgram])
 
   return (
     <>
@@ -104,6 +122,34 @@ export default function StudentTable() {
       ) : (
         <>
           <div className="w-full pb-3 flex flex-row justify-end items-center gap-3">
+            <IconFiltering />
+            <Autocomplete
+              label="by Session"
+              className="max-w-40"
+              isClearable={false}
+              defaultSelectedKey={"1"}
+              onSelectionChange={handleBySessionAutocompleteChange}
+            >
+              <AutocompleteItem key="1">1</AutocompleteItem>
+              <AutocompleteItem key="2">2</AutocompleteItem>
+              <AutocompleteItem key="3">3</AutocompleteItem>
+            </Autocomplete>
+
+            <Autocomplete
+              label="by Program"
+              items={programs}
+              className="max-w-40"
+              isClearable={false}
+              defaultSelectedKey={""}
+              onSelectionChange={handleByProgramAutocompleteChange}
+            >
+              <AutocompleteItem key="">All</AutocompleteItem>
+              {programs.map((program) => 
+                <AutocompleteItem key={program.initial}>
+                  {program.initial}
+                </AutocompleteItem>)}
+            </Autocomplete>
+            
             <Input
               isClearable
               variant="faded"
@@ -126,7 +172,6 @@ export default function StudentTable() {
               </DropdownTrigger>
               <DropdownMenu aria-label="Table Options Dropdown">
                 <DropdownItem key="import"><UploadCSVButton /></DropdownItem>
-                <DropdownItem key="hide">Hide</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -171,15 +216,15 @@ export default function StudentTable() {
                 <TableBody emptyContent={"No rows to display."}>
                   {students.map((item) => (
                     <TableRow
-                      key={item.profiles.id}
+                      key={item.user_id}
                       onClick={() => handleRowClick(item)}
                     >
                       <TableCell>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</TableCell>
                       <TableCell>{item.email}</TableCell>
                       <TableCell>{new Date(item.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
-                      <TableCell>{item.programs.initial}</TableCell>
+                      <TableCell>{item.program_initial}</TableCell>
                       <TableCell>{item.year || "-"}</TableCell>
-                      <TableCell>{item.marital_statuses.status}</TableCell>
+                      <TableCell>{item.marital_status}</TableCell>
                       <TableCell>
                         {item.is_working_student ? "Yes" : "No"}
                       </TableCell>

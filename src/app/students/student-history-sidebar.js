@@ -48,13 +48,13 @@ export default function StudentHistorySidebar({ user, onClose }) {
         .select(
           `id, created_at, user_id, responses, apriori_results (id, apriori_result, counseling_statuses (id, name))`
         )
-        .eq("user_id", user.profiles.id)
+        .eq("user_id", user.user_id)
   
       const { data: counselingData } = await supabase
         .from("counseling_statuses")
         .select(`id, name`)
       
-      setUserId(user.profiles.id)
+      setUserId(user.user_id)
       setCounselingStatuses(counselingData)
   
       if (error && status !== 406) {
@@ -72,7 +72,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
     } catch (e) {
       console.error(e)
     }
-  }, [supabase, user.profiles.id])
+  }, [supabase, user.user_id])
 
   const getColorForAprioriResult = (result) => {
     switch (result) {
@@ -253,7 +253,9 @@ export default function StudentHistorySidebar({ user, onClose }) {
               </Button>
             </CardHeader>
             {isLoading ? (
-              <CircularProgress />
+              <div className="p-16">
+                <CircularProgress />
+              </div>
             ) : (
               <CardBody aria-label="Sidebar Card Body">
                 <h1 className="text-xl font-bold pb-3">Personal Details</h1>
@@ -267,9 +269,9 @@ export default function StudentHistorySidebar({ user, onClose }) {
                       { label: "Name", value: `${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}` },
                       { label: "Email address", value: user.email },
                       { label: "Birth date", value: new Date(user.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },
-                      { label: "Program", value: user.programs.name },
+                      { label: "Program", value: user.program_name },
                       { label: "Year", value: user.year },
-                      { label: "Marital Status", value: user.marital_statuses.status },
+                      { label: "Marital Status", value: user.marital_status },
                       { label: "Working Student?", value: user.is_working_student ? "Yes" : "No" },
                     ].map((item, index) => (
                       <TableRow key={index}>
