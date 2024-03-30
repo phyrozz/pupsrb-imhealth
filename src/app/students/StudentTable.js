@@ -121,7 +121,7 @@ export default function StudentTable() {
         </div>
       ) : (
         <>
-          <div className="w-full pb-3 flex flex-row justify-end items-center gap-3">
+          <div className="w-full pb-3 flex flex-row flex-wrap md:flex-nowrap justify-end items-center gap-3">
             <IconFiltering />
             <Autocomplete
               label="by Session"
