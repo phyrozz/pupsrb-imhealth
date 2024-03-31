@@ -31,7 +31,7 @@ export default function Dashboard({ session }) {
           Welcome!
         </h1>
         <p className="text-2xl font-bold pb-10">{email}</p>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 pb-5">
           <ProgramCountTable />
           <AssessmentAnsweredChart />
           <ParticipatedSessionsChart />

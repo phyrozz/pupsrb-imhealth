@@ -15,8 +15,9 @@ export default function ParticipatedSessionsChart() {
       try {
         var sessions = []
         for (let c = 0; c <= 3; c++) {
-          let { count, error } = await supabase.rpc("count_users_with_specific_assessment_count", { assessment_count: c }, { count: "exact" })
-          if (error) { count = 0 }
+          let count = 0
+          let { data } = await supabase.rpc("count_users_with_specific_assessment_count", { assessment_count: c })
+          count = data[0].user_count
           sessions.push(count)
         }
         
