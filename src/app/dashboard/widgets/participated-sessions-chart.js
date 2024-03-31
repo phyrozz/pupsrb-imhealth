@@ -13,38 +13,14 @@ export default function ParticipatedSessionsChart() {
   useEffect(() => {
     async function getSessionCounts() {
       try {
-        const { data: assessments, error } = await supabase.from("assessments").select("user_id")
-
-        if (error) {
-          throw error
+        var sessions = []
+        for (let c = 0; c <= 3; c++) {
+          let { count, error } = await supabase.rpc("count_users_with_specific_assessment_count", { assessment_count: c }, { count: "exact" })
+          if (error) { count = 0 }
+          sessions.push(count)
         }
-
-        // Group assessments by user_id
-        const userGroups = assessments.reduce((acc, curr) => {
-          const { user_id } = curr;
-          if (!acc[user_id]) {
-            acc[user_id] = [];
-          }
-          acc[user_id].push(curr);
-          return acc;
-        }, {});
-
-        // Count the number of assessments for each user
-        const sessionCounts = Object.values(userGroups).reduce((counts, assessments) => {
-          const count = assessments.length;
-          if (count === 1) {
-            counts[0]++;
-          } else if (count === 2) {
-            counts[1]++;
-          } else if (count === 3) {
-            counts[2]++;
-          }
-          return counts;
-        }, [0, 0, 0]);
-
-        const series = Object.values(sessionCounts)
-
-        setChartSeries([{ data: series }]);
+        
+        setChartSeries([{ data: sessions }]);
       } catch (error) {
         console.error("Failed to fetch session counts:", error.message)
       }
@@ -64,7 +40,7 @@ export default function ParticipatedSessionsChart() {
             chart: {
               type: 'bar',
             },
-            labels: ["Session 1", "Session 2", "Session 3"],
+            labels: ["None", "Session 1", "Session 2", "Session 3"],
           }}
           series={chartSeries}
           type="bar"
