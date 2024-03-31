@@ -124,7 +124,7 @@ export default function StudentTable() {
           <div className="w-full pb-3 flex flex-row flex-wrap md:flex-nowrap justify-end items-center gap-3">
             <IconFiltering />
             <Autocomplete
-              label="by Session"
+              label="by No. of Session"
               className="max-w-40"
               isClearable={false}
               defaultSelectedKey={"1"}
@@ -171,7 +171,7 @@ export default function StudentTable() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Table Options Dropdown">
-                <DropdownItem key="import"><UploadCSVButton /></DropdownItem>
+                <DropdownItem key="import" endContent={<IconFileImport />}><UploadCSVButton /></DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

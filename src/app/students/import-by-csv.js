@@ -244,8 +244,8 @@ export default function UploadCSVButton() {
           )}
         </ModalContent>
       </Modal>
-      <button className="bg-slate-500 p-3 rounded-lg shadow-lg shadow-slate-500">
-        <label className="text-white text-sm cursor-pointer" htmlFor="upload-input">
+      <button>
+        <label className="text-sm cursor-pointer" htmlFor="upload-input">
           Import (.csv)
         </label>
         <input 

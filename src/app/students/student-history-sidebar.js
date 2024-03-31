@@ -23,6 +23,7 @@ import { saveAs } from 'file-saver'
 import GeneratePDFByStudent from "../generate-report/by-student/generate-pdf"
 import IconIconEdit from "../components/edit-icon"
 import IconClose from "../components/close-icon"
+import ConfirmSendEmailModal from "./confirm-email-modal"
 
 export default function StudentHistorySidebar({ user, onClose }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -34,6 +35,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   // const [isOpen, setIsOpen] = React.useState(false)
   const [selectedAssessment, setSelectedAssessment] = React.useState(null)
   const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  const {isOpen: isConfirmEmailModalOpen, onOpen: onConfirmEmailModalOpen, onOpenChange: onConfirmEmailModalOpenChange} = useDisclosure()
   const [popoverMessage, setPopoverMessage] = React.useState(null)
   const [userId, setUserId] = React.useState(null)
   const [isEditMode, setIsEditMode] = React.useState(false)
@@ -53,6 +55,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
       const { data: counselingData } = await supabase
         .from("counseling_statuses")
         .select(`id, name`)
+        .order('id')
       
       setUserId(user.user_id)
       setCounselingStatuses(counselingData)
@@ -201,7 +204,12 @@ export default function StudentHistorySidebar({ user, onClose }) {
   }
 
   const handleEditButton = () => {
-    setIsEditMode((prevEditMode) => !prevEditMode)
+    if (isEditMode) {
+      onConfirmEmailModalOpen()
+      setIsEditMode(false)
+    } else {
+      setIsEditMode(true)
+    }
   }
 
   const handleUpdateStatus = async (assessmentId, newStatusId) => {
@@ -242,6 +250,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   
   return (
     <>
+      <ConfirmSendEmailModal isOpen={isConfirmEmailModalOpen} onOpenChange={onConfirmEmailModalOpenChange} />
       <AssessmentResponsesModal assessmentId={selectedAssessment} isOpen={isOpen} onOpenChange={onOpenChange} />
       <Card className="h-full w-full overflow-auto" aria-label="Sidebar Card">
         {user && (
