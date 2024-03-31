@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, Input, Divider, Button, Link, CircularProgress } from '@nextui-org/react'
 import { motion } from 'framer-motion'
-import { ArrowForwardRounded } from '@mui/icons-material'
+import IconArrowRightShort from './components/arrow-right-short'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
@@ -110,21 +110,8 @@ export default function AuthForm(props) {
                   />
                 )}
               </div>
-              <Button type="submit" color="primary">
-                {isLoading ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.5,
-                      ease: [0, 0.71, 0.2, 1.01]
-                    }}
-                  >
-                    <CircularProgress />
-                  </motion.div>
-                ) : (
-                  <ArrowForwardRounded />
-                )}
+              <Button type="submit" color="primary" isLoading={isLoading}>
+                <IconArrowRightShort />
               </Button>
             </form>
             {signUpHref ? (

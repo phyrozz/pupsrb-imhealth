@@ -2,7 +2,7 @@
 import { NextUIProvider, Link, Button } from "@nextui-org/react"
 import React from "react"
 import SignUpForm from "./signup-form"
-import { ArrowBackRounded } from "@mui/icons-material"
+import IconArrowBackUp from "@/app/components/arrow-back-up"
 
 export default function SignUpPage() {
     return (
@@ -10,7 +10,7 @@ export default function SignUpPage() {
             <div className="h-screen bg-gradient-to-r from-slate-50 to-slate-300 flex flex-col justify-center items-center relative">
                 <div className="absolute left-0 top-0 p-5">
                     <Button as={Link} href="/assessment/login" variant="faded">
-                        <ArrowBackRounded />
+                        <IconArrowBackUp />
                         Back
                     </Button>
                 </div>

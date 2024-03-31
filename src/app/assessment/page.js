@@ -2,7 +2,7 @@
 import React from "react"
 import { Button, NextUIProvider, CircularProgress } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
-import { ArrowForwardRounded } from "@mui/icons-material"
+import IconArrowRightShort from "../components/arrow-right-short"
 import { motion } from "framer-motion"
 
 export default function AssessmentPage() {
@@ -38,7 +38,7 @@ export default function AssessmentPage() {
                                 <CircularProgress />
                             </motion.div> : <>
                             Answer the form
-                            <ArrowForwardRounded />
+                            <IconArrowRightShort />
                         </>}
                         
                     </Button>

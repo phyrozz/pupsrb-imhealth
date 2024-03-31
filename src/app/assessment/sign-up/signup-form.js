@@ -12,7 +12,7 @@ import {
   RadioGroup, Radio, 
   Link
 } from "@nextui-org/react"
-import { ArrowForwardRounded } from "@mui/icons-material"
+import IconArrowRightShort from "@/app/components/arrow-right-short"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 
@@ -274,7 +274,7 @@ export default function SignUpForm() {
                       }}
                       >
                         <CircularProgress />
-                      </motion.div> : <ArrowForwardRounded />
+                      </motion.div> : <IconArrowRightShort />
                     }
                   </Button>
                 </div>
