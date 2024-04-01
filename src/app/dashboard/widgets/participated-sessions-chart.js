@@ -42,6 +42,11 @@ export default function ParticipatedSessionsChart() {
               type: 'bar',
             },
             labels: ["None", "Session 1", "Session 2", "Session 3"],
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+              }
+            },
           }}
           series={chartSeries}
           type="bar"

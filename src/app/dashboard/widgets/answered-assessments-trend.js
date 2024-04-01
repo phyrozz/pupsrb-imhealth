@@ -17,45 +17,47 @@ export default function AnsweredAssessmentsTrendChart() {
       xaxis: {
         type: 'datetime',
       },
+      stroke: {
+        curve: 'smooth',
+      },
     },
-    series: [{
-      name: 'Answered Assessments',
-      data: [],
-    }],
+    series: [],
   })
 
   useEffect(() => {
-    async function fetchChartData() {
+    async function fetchScenarioNames() {
       try {
-        const { data, error } = await supabase.rpc("get_answered_assessments_trend")
+        const { data: scenarioNames, error } = await supabase
+          .from('assessment_scenarios')
+          .select('name')
 
         if (error) {
           throw error
         }
 
-        const dates = data.map(row => new Date(row.session_date).getTime())
-        const counts = data.map(row => row.count)
+        const seriesData = await Promise.all(
+          scenarioNames.map(async scenario => {
+            const { data: trendData } = await supabase.rpc("get_answered_assessments_trend", { scenario_name: scenario.name })
+            const dates = trendData.map(row => new Date(row.session_date).getTime())
+            const counts = trendData.map(row => row.count)
+
+            return {
+              name: scenario.name,
+              data: counts.map((count, index) => [dates[index], count]), // Format data as [x, y]
+            }
+          })
+        )
 
         setChartData(prevState => ({
           ...prevState,
-          series: [{
-            ...prevState.series[0],
-            data: counts,
-          }],
-          options: {
-            ...prevState.options,
-            xaxis: {
-              ...prevState.options.xaxis,
-              categories: dates,
-            },
-          },
+          series: seriesData,
         }))
       } catch (error) {
         console.error('Error fetching chart data:', error.message)
       }
     }
 
-    fetchChartData()
+    fetchScenarioNames()
   }, [])
 
   return (

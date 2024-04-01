@@ -43,6 +43,12 @@ export default function ProgramCountTable() {
               type: 'bar',
             },
             labels: chartLabels,
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+                horizontal: true,
+              }
+            },
           }}
           series={[{ data: chartSeries }]}
           type="bar"

@@ -1,25 +1,25 @@
-import React from 'react'
-import { Card, CardHeader, CardBody } from '@nextui-org/react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import React, { useState, useEffect } from 'react'
 import Chart from 'react-apexcharts'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Card, CardHeader, CardBody } from '@nextui-org/react'
 
-export default function ByScenariosChart() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
 
-  const [chartData, setChartData] = React.useState([])
+export default function AssessmentResultsDonutChart() {
+  const [chartData, setChartData] = useState([])
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function getAssessmentResultCounts() {
       try {
-        const { data: results, error } = await supabase.rpc("count_apriori_results_by_scenario")
+        const { data, error } = await supabase.rpc("count_apriori_results_by_scenario")
 
         if (error) {
           throw error
         }
 
-        setChartData(results)
+        setChartData(data)
       } catch (error) {
         console.error("Error fetching assessment result counts:", error.message)
       }
@@ -40,15 +40,33 @@ export default function ByScenariosChart() {
         <Chart 
           options={{
             chart: {
-              type: 'pie',
+              type: 'donut',
             },
             labels: chartLabels,
             legend: {
               position: 'bottom',
             },
+            plotOptions: {
+              pie: {
+                expandOnClick: true,
+                donut: {
+                  size: '50%',
+                  labels: {
+                    show: true,
+                    total: {
+                      show: true,
+                      showAlways: true,
+                    }
+                  }
+                }
+              }
+            },
+            fill: {
+              type: 'gradient',
+            }
           }}
           series={chartSeries}
-          type="pie"
+          type="donut"
         />
       </CardBody>
     </Card>
