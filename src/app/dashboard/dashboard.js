@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import AssessmentAnsweredChart from "./widgets/by-scenarios-chart";
 import ProgramCountTable from "./widgets/by-program-count-table";
 import ParticipatedSessionsChart from "./widgets/participated-sessions-chart";
+import AnsweredAssessmentsTrendChart from "./widgets/answered-assessments-trend";
 
 export default function Dashboard({ session }) {
 	const user = session?.user
@@ -35,6 +36,7 @@ export default function Dashboard({ session }) {
           <ProgramCountTable />
           <AssessmentAnsweredChart />
           <ParticipatedSessionsChart />
+          <AnsweredAssessmentsTrendChart />
         </div>
       </div>
     </>
