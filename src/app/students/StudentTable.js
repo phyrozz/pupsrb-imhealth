@@ -207,6 +207,7 @@ export default function StudentTable() {
               >
                 <TableHeader>
                   <TableColumn>Name</TableColumn>
+                  <TableColumn>Student Number</TableColumn>
                   <TableColumn>Email</TableColumn>
                   <TableColumn>Birth Date</TableColumn>
                   <TableColumn>Program</TableColumn>
@@ -221,6 +222,7 @@ export default function StudentTable() {
                       onClick={() => handleRowClick(item)}
                     >
                       <TableCell>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</TableCell>
+                      <TableCell>{item.student_number}</TableCell>
                       <TableCell>{item.email}</TableCell>
                       <TableCell>{new Date(item.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
                       <TableCell>{item.program_initial}</TableCell>

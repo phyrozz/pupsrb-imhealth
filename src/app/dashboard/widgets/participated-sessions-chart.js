@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
+"use client"
+import React from 'react'
 import { Card, CardHeader, CardBody } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import Chart from 'react-apexcharts'
+import dynamic from 'next/dynamic'
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
 export default function ParticipatedSessionsChart() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const supabase = createClientComponentClient({ supabaseUrl: supabaseUrl, supabaseKey: supabaseKey })
 
-  const [chartSeries, setChartSeries] = useState([0, 0, 0])
+  const [chartSeries, setChartSeries] = React.useState([0, 0, 0])
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getSessionCounts() {
       try {
         var sessions = []
@@ -50,6 +52,8 @@ export default function ParticipatedSessionsChart() {
           }}
           series={chartSeries}
           type="bar"
+          width={"100%"}
+          height={400}
         />
       </CardBody>
     </Card>

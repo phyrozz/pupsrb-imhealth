@@ -30,8 +30,11 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
   };
 
   useEffect(() => {
-    getAssessmentResponse()
-  }, [assessmentId])
+    if (isOpen) {
+      setIsLoading(true)
+      getAssessmentResponse()
+    }
+  }, [assessmentId, isOpen])
 
   const getChipColor = (responseIndex) => {
     const responseValue = responses[responseIndex]
@@ -58,49 +61,53 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
     domain: question.domain
   }))
 
+  const handleOnClose = () => {
+    onOpenChange()
+  }
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" size="3xl" aria-label="Student Responses Modal">
       <ModalContent>
-        {onClose => (
-          <>
-            {isLoading ? (
+        <>
+          {isLoading ? (
+            <div className='w-full h-96 flex justify-center items-center'>
               <CircularProgress />
-            ) : (
-              <>
-                <ModalHeader className="flex flex-col gap-1 text-black">Responses</ModalHeader>
-                <ModalBody>
-                  <Table removeWrapper aria-label="Responses Table">
-                    <TableHeader>
-                      <TableColumn></TableColumn>
-                      <TableColumn></TableColumn>
-                      <TableColumn>Question</TableColumn>
-                      <TableColumn align="end" className="text-right">Answer</TableColumn>
-                    </TableHeader>
-                    <TableBody className="overflow-auto">
-                      {flattenedQuestions.map(({ index, question, domain }) => (
-                        <TableRow key={index}>
-                          <TableCell><b>{`${domain}`}</b></TableCell>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{question}</TableCell>
-                          <TableCell align="end" className="text-right">
-                            <Chip radius="sm" color={getChipColor(index)}>
-                              {assessmentData.responses[responses[index]]}
-                            </Chip>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="primary" onPress={onClose}>
-                    Close
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </>
-        )}
+            </div>
+          ) : (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-black">Responses</ModalHeader>
+              <ModalBody>
+                <Table removeWrapper aria-label="Responses Table">
+                  <TableHeader>
+                    <TableColumn></TableColumn>
+                    <TableColumn></TableColumn>
+                    <TableColumn>Question</TableColumn>
+                    <TableColumn align="end" className="text-right">Answer</TableColumn>
+                  </TableHeader>
+                  <TableBody className="overflow-auto">
+                    {flattenedQuestions.map(({ index, question, domain }) => (
+                      <TableRow key={index}>
+                        <TableCell><b>{`${domain}`}</b></TableCell>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{question}</TableCell>
+                        <TableCell align="end" className="text-right">
+                          <Chip radius="sm" color={getChipColor(index)}>
+                            {assessmentData.responses[responses[index]]}
+                          </Chip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onPress={handleOnClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </>
       </ModalContent>
     </Modal>
   )

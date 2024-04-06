@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import Chart from 'react-apexcharts'
+"use client"
+import React from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import dynamic from 'next/dynamic'
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
 
 export default function AnsweredAssessmentsTrendChart() {
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = React.useState({
     options: {
       chart: {
         type: 'line',
@@ -24,7 +26,7 @@ export default function AnsweredAssessmentsTrendChart() {
     series: [],
   })
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function fetchScenarioNames() {
       try {
         const { data: scenarioNames, error } = await supabase
@@ -37,20 +39,28 @@ export default function AnsweredAssessmentsTrendChart() {
 
         const seriesData = await Promise.all(
           scenarioNames.map(async scenario => {
-            const { data: trendData } = await supabase.rpc("get_answered_assessments_trend", { scenario_name: scenario.name })
-            const dates = trendData.map(row => new Date(row.session_date).getTime())
-            const counts = trendData.map(row => row.count)
-
-            return {
-              name: scenario.name,
-              data: counts.map((count, index) => [dates[index], count]), // Format data as [x, y]
+            // Check if the scenario name is not "None"
+            if (scenario.name !== "None") {
+              const { data: trendData } = await supabase.rpc("get_answered_assessments_trend", { scenario_name: scenario.name })
+              const dates = trendData.map(row => new Date(row.session_date).getTime())
+              const counts = trendData.map(row => row.count)
+    
+              return {
+                name: scenario.name,
+                data: counts.map((count, index) => [dates[index], count]), // Format data as [x, y]
+              }
+            } else {
+              return null; // Return null for scenarios with "None" name
             }
           })
         )
 
+        // Filter out the null entries
+        const filteredSeriesData = seriesData.filter(data => data !== null);
+
         setChartData(prevState => ({
           ...prevState,
-          series: seriesData,
+          series: filteredSeriesData,
         }))
       } catch (error) {
         console.error('Error fetching chart data:', error.message)
@@ -70,6 +80,7 @@ export default function AnsweredAssessmentsTrendChart() {
           options={chartData.options}
           series={chartData.series}
           type="line"
+          width={"100%"}
           height={400}
         />
       </CardBody>

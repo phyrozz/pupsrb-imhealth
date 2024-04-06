@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import Chart from 'react-apexcharts'
+"use client"
+import React from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import dynamic from 'next/dynamic'
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
 
-export default function AssessmentResultsDonutChart() {
-  const [chartData, setChartData] = useState([])
+export default function AssessmentResultsDonutChart() {  
+  const [chartData, setChartData] = React.useState([])
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getAssessmentResultCounts() {
       try {
         const { data, error } = await supabase.rpc("count_apriori_results_by_scenario")
@@ -46,6 +48,9 @@ export default function AssessmentResultsDonutChart() {
             legend: {
               position: 'bottom',
             },
+            noData: {
+              text: "No available data."
+            },
             plotOptions: {
               pie: {
                 expandOnClick: true,
@@ -67,6 +72,8 @@ export default function AssessmentResultsDonutChart() {
           }}
           series={chartSeries}
           type="donut"
+          width={"100%"}
+          height={400}
         />
       </CardBody>
     </Card>

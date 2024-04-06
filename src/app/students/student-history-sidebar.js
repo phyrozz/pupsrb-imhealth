@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   Card,
   CardHeader,
   CardBody,
   Button,
-  CircularProgress,
+  Progress,
   Table,
   TableHeader,
   TableColumn,
@@ -24,6 +24,7 @@ import GeneratePDFByStudent from "../generate-report/by-student/generate-pdf"
 import IconIconEdit from "../components/edit-icon"
 import IconClose from "../components/close-icon"
 import ConfirmSendEmailModal from "./confirm-email-modal"
+import IconBxSave from "../components/bx-save"
 
 export default function StudentHistorySidebar({ user, onClose }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -34,7 +35,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   const [isLoading, setIsLoading] = React.useState(true)
   // const [isOpen, setIsOpen] = React.useState(false)
   const [selectedAssessment, setSelectedAssessment] = React.useState(null)
-  const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  const {isOpen: isAssessmentResponsesModalOpen, onOpen: onAssessmentResponsesModalOpen, onOpenChange: onAssessmentResponsesModalOpenChange} = useDisclosure()
   const {isOpen: isConfirmEmailModalOpen, onOpen: onConfirmEmailModalOpen, onOpenChange: onConfirmEmailModalOpenChange} = useDisclosure()
   const [popoverMessage, setPopoverMessage] = React.useState(null)
   const [userId, setUserId] = React.useState(null)
@@ -42,6 +43,8 @@ export default function StudentHistorySidebar({ user, onClose }) {
   const [counselingStatuses, setCounselingStatuses] = React.useState([])
   const [currentUserRole, setCurrentUserRole] = React.useState("")
   const [assessmentScenarios, setAssessmentScenarios] = React.useState([])
+  const [hasMadeChanges, setHasMadeChanges] = useState(false)
+  const [tempStatusChanges, setTempStatusChanges] = useState({})
 
   const getAssessmentHistory = React.useCallback(async () => {
     try {
@@ -105,7 +108,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
 
       setCurrentUserRole(adminData.admin_roles.role_name)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -132,19 +135,22 @@ export default function StudentHistorySidebar({ user, onClose }) {
   }  
 
   React.useEffect(() => {
+    setIsLoading(true)
     getAssessmentScenarios()
     getAssessmentHistory()
     getCurrentUserRole()
-  }, [getAssessmentHistory])
+  }, [user, getAssessmentHistory])
 
   const handleRowClick = (id) => {
     setSelectedAssessment(id)
-    onOpen()
+    onAssessmentResponsesModalOpen()
     // setIsOpen(true)
   }
 
   const handleCloseModal = () => {
     // setIsOpen(false)
+    onConfirmEmailModalOpenChange()
+    setHasMadeChanges(false)
   }
 
   const handleGenerateButton = async () => {
@@ -205,156 +211,219 @@ export default function StudentHistorySidebar({ user, onClose }) {
 
   const handleEditButton = () => {
     if (isEditMode) {
-      onConfirmEmailModalOpen()
-      setIsEditMode(false)
+      if (hasMadeChanges) {
+        onConfirmEmailModalOpen()
+      } else {
+        setIsEditMode(false)
+      }
     } else {
       setIsEditMode(true)
     }
   }
 
-  const handleUpdateStatus = async (assessmentId, newStatusId) => {
+  // const handleUpdateStatus = async (assessmentId, newStatusId) => {
+  //   try {
+  //     // Update the counseling status for the selected assessment in Supabase
+  //     const { data } = await supabase
+  //       .from("apriori_results")
+  //       .update({ "counseling_status_id": newStatusId })
+  //       .select(`counseling_statuses!inner(name)`)
+  //       .eq("assessment_id", assessmentId)
+  
+  //     // Find the name of the new status
+  //     const newStatus = counselingStatuses.find((status) => status.name === data[0].counseling_statuses.name)
+  
+  //     // Update the local assessment history with the new status
+  //     setAssessmentHistory((prevHistory) =>
+  //     prevHistory.map((assessment) =>
+  //       assessment.id === assessmentId
+  //         ? {
+  //             ...assessment,
+  //             apriori_results: assessment.apriori_results.map((result) =>
+  //                   ({
+  //                     ...result,
+  //                     counseling_statuses: { 
+  //                       name: newStatus.name,
+  //                       id: newStatus.id,
+  //                     },
+  //                   })
+  //             ),
+  //         }
+  //         : assessment
+  //       )
+  //     )
+
+  //     // Set to true when any changes were made on the status dropdowns to make the confirm modal appear
+  //     setHasMadeChanges(true)
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }  
+
+  const handleTempStatusChange = (assessmentId, newStatusId) => {
+    setTempStatusChanges(prevState => ({
+      ...prevState,
+      [assessmentId]: newStatusId
+    }))
+
+    setHasMadeChanges(true)
+  }
+
+  const handleConfirmChanges = async () => {
     try {
-      // Update the counseling status for the selected assessment in Supabase
-      const { data } = await supabase
-        .from("apriori_results")
-        .update({ "counseling_status_id": newStatusId })
-        .select(`counseling_statuses!inner(name)`)
-        .eq("assessment_id", assessmentId)
+      // Update statuses in Supabase using tempStatusChanges
+      for (const [assessmentId, newStatusId] of Object.entries(tempStatusChanges)) {
+        const { data } = await supabase
+          .from("apriori_results")
+          .update({ "counseling_status_id": newStatusId })
+          .select("counseling_statuses!inner(name)")
+          .eq("assessment_id", assessmentId)
   
-      // Find the name of the new status
-      const newStatus = counselingStatuses.find((status) => status.name === data[0].counseling_statuses.name)
+        // Find the name of the new status
+        const newName = data[0].counseling_statuses.name
   
-      // Update the local assessment history with the new status
-      setAssessmentHistory((prevHistory) =>
-      prevHistory.map((assessment) =>
-        assessment.id === assessmentId
-          ? {
-              ...assessment,
-              apriori_results: assessment.apriori_results.map((result) =>
-                    ({
-                      ...result,
-                      counseling_statuses: { 
-                        name: newStatus.name,
-                        id: newStatus.id,
-                      },
-                    })
-              ),
-          }
-          : assessment
+        // Update the local assessment history with the new status name
+        setAssessmentHistory(prevHistory =>
+          prevHistory.map(assessment => 
+            assessment.id === assessmentId ? ({
+            ...assessment,
+            apriori_results: assessment.apriori_results.map(result => ({
+              ...result,
+              counseling_statuses: {
+                name: newName,
+                id: result.counseling_statuses.id
+              }
+            }))
+          }) : assessment)
         )
-      )
+      }
+  
+      // Reset temporary status changes
+      setTempStatusChanges({})
+  
+      // Close the confirmation modal
+      onConfirmEmailModalOpenChange()
+      setIsEditMode(false)
     } catch (error) {
       console.error(error)
     }
-  }  
+  }
+
+  const handleCancelChanges = () => {
+    setIsEditMode(false)
+    setHasMadeChanges(false)
+    setTempStatusChanges({})
+    onConfirmEmailModalOpenChange()
+  }
   
   return (
     <>
-      <ConfirmSendEmailModal isOpen={isConfirmEmailModalOpen} onOpenChange={onConfirmEmailModalOpenChange} />
-      <AssessmentResponsesModal assessmentId={selectedAssessment} isOpen={isOpen} onOpenChange={onOpenChange} />
+      <ConfirmSendEmailModal isOpen={isConfirmEmailModalOpen} onOpenChange={onConfirmEmailModalOpenChange} onClose={handleCloseModal} onConfirm={handleConfirmChanges} onCancel={handleCancelChanges} />
+      <AssessmentResponsesModal assessmentId={selectedAssessment} isOpen={isAssessmentResponsesModalOpen} onOpenChange={onAssessmentResponsesModalOpenChange} />
       <Card className="h-full w-full overflow-auto" aria-label="Sidebar Card">
         {user && (
           <>
-            <CardHeader className="flex flex-row justify-between gap-1 text-black font-bold" aria-label="Sidebar Card Header">
-              {`${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}`}
-              <Button isIconOnly color="primary" variant="light" onClick={onClose}>
-                <IconClose />
-              </Button>
-            </CardHeader>
-            {isLoading ? (
-              <div className="p-16">
-                <CircularProgress />
-              </div>
-            ) : (
-              <CardBody aria-label="Sidebar Card Body">
-                <h1 className="text-xl font-bold pb-3">Personal Details</h1>
-                <Table hideHeader removeWrapper className="pb-5" aria-label="Student Details Table">
-                  <TableHeader aria-label="Student Details Table Header">
-                    <TableColumn aria-label="Details"></TableColumn>
-                    <TableColumn aria-label="Details Value"></TableColumn>
-                  </TableHeader>
-                  <TableBody className="overflow-auto" aria-label="Student Details Table Body">
-                    {[
-                      { label: "Name", value: `${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}` },
-                      { label: "Email address", value: user.email },
-                      { label: "Birth date", value: new Date(user.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },
-                      { label: "Program", value: user.program_name },
-                      { label: "Year", value: user.year },
-                      { label: "Marital Status", value: user.marital_status },
-                      { label: "Working Student?", value: user.is_working_student ? "Yes" : "No" },
-                    ].map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-right font-bold">{item.label}</TableCell>
-                        <TableCell>{item.value}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <div className="w-full flex flex-row justify-between items-center pb-1">
-                  <h1 className="text-xl font-bold pb-3">Assessment History</h1>
-                  {(currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") && <Button variant={isEditMode ? "shadow" : "light"} onClick={handleEditButton}><IconIconEdit /> Edit Status(es)</Button>}
-                </div>
-                <Table removeWrapper selectionMode="single" aria-label="Assessment History Table">
-                  <TableHeader aria-label="Assessment History Table Header">
-                    <TableColumn></TableColumn>
-                    <TableColumn>Result</TableColumn>
-                    <TableColumn>Counseling Status</TableColumn>
-                  </TableHeader>
-                  <TableBody className="overflow-auto" emptyContent={"No answered assessment."} aria-label="Assessment History Table Body">
-                    {assessmentHistory.map((assessment) => (
-                      <TableRow key={assessment.id} onClick={() => handleRowClick(assessment.id)}>
-                        <TableCell>{new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
-                        <TableCell><Chip radius="full" color={assessment.color}>{assessment.apriori_results && assessment.apriori_results.length > 0 ? assessment.apriori_results[0].apriori_result : 'N/A'}</Chip></TableCell>
-                        <TableCell>
-                          {isEditMode ? (
-                            <Select
-                              items={counselingStatuses}
-                              defaultSelectedKeys={[String(assessment.apriori_results[0].counseling_statuses.id)]}
-                              value={assessment.apriori_results[0].counseling_statuses_id}
-                              size="sm"
-                              onChange={(newStatusId) => handleUpdateStatus(assessment.id, newStatusId.target.value)}
-                            >
-                              {counselingStatuses.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
-                            </Select>
-                          ) : (
-                            <Chip color="default">{assessment.apriori_results && assessment.apriori_results.length > 0 ? (assessment.apriori_results[0].counseling_statuses ? assessment.apriori_results[0].counseling_statuses.name : 'N/A') : 'N/A'}</Chip>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <div className="w-full flex justify-end items-center my-4">
-                  <Popover>
-                    <PopoverTrigger>
-                      <Button variant="shadow" color="primary" onClick={handleGenerateButton}>Generate Report</Button>
-                    </PopoverTrigger>
-                    {<PopoverContent hidden={!popoverMessage}>
-                      {popoverMessage}
-                    </PopoverContent>}
-                  </Popover>
-                </div>
-                <div className="w-full flex flex-row justify-between items-center pb-1">
-                  <h1 className="text-xl font-bold pb-3">Result Interpretations</h1>
-                </div>
-                <Table removeWrapper selectionMode="single" aria-label="Result Interpretations Table">
-                  <TableHeader aria-label="Result Interpretations Table Header">
-                    <TableColumn>Result</TableColumn>
-                    <TableColumn>Scenario</TableColumn>
-                    <TableColumn>Description</TableColumn>
-                  </TableHeader>
-                  <TableBody className="overflow-auto" aria-label="Result Interpretations Table Body">
-                    {assessmentScenarios.map((scenario) => (
-                      <TableRow key={scenario.id}>
-                        <TableCell>{scenario.id}</TableCell>
-                        <TableCell><Chip size="sm" radius="full" color={scenario.color}>{scenario.name}</Chip></TableCell>
-                        <TableCell>{scenario.description}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardBody>
-            )}
+            {isLoading ? <Progress isIndeterminate size="sm" aria-label="Sidebar Loading" /> :
+              <>
+                <CardHeader className="flex flex-row justify-between gap-1 text-black font-bold" aria-label="Sidebar Card Header">
+                  {`${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}`}
+                  <Button isIconOnly color="primary" variant="light" onClick={onClose}>
+                    <IconClose />
+                  </Button>
+                </CardHeader>
+                <CardBody aria-label="Sidebar Card Body">
+                  <h1 className="text-xl font-bold pb-3">Personal Details</h1>
+                  <Table hideHeader removeWrapper className="pb-5" aria-label="Student Details Table">
+                    <TableHeader aria-label="Student Details Table Header">
+                      <TableColumn aria-label="Details"></TableColumn>
+                      <TableColumn aria-label="Details Value"></TableColumn>
+                    </TableHeader>
+                    <TableBody className="overflow-auto" aria-label="Student Details Table Body">
+                      {[
+                        { label: "Name", value: `${user.first_name} ${user.middle_name} ${user.last_name} ${user.name_suffix}` },
+                        { label: "Student Number", value: user.student_number },
+                        { label: "Email address", value: user.email },
+                        { label: "Birth date", value: new Date(user.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },
+                        { label: "Program", value: user.program_name },
+                        { label: "Year", value: user.year },
+                        { label: "Marital Status", value: user.marital_status },
+                        { label: "Working Student?", value: user.is_working_student ? "Yes" : "No" },
+                      ].map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-right font-bold">{item.label}</TableCell>
+                          <TableCell>{item.value}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="w-full flex flex-row justify-between items-center pb-1">
+                    <h1 className="text-xl font-bold pb-3">Assessment History</h1>
+                    {(currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") && <Button variant={isEditMode ? "shadow" : "light"} onClick={handleEditButton}>
+                      {isEditMode ? <><IconBxSave /> Save Changes</> : <><IconIconEdit /> Edit Status(es)</>}
+                    </Button>}
+                  </div>
+                  <Table removeWrapper selectionMode="single" aria-label="Assessment History Table">
+                    <TableHeader aria-label="Assessment History Table Header">
+                      <TableColumn></TableColumn>
+                      <TableColumn>Result</TableColumn>
+                      <TableColumn>Counseling Status</TableColumn>
+                    </TableHeader>
+                    <TableBody className="overflow-auto" emptyContent={"No answered assessment."} aria-label="Assessment History Table Body">
+                      {assessmentHistory.map((assessment) => (
+                        <TableRow key={assessment.id} onClick={() => handleRowClick(assessment.id)}>
+                          <TableCell>{new Date(assessment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
+                          <TableCell><Chip radius="full" color={assessment.color}>{assessment.apriori_results && assessment.apriori_results.length > 0 ? assessment.apriori_results[0].apriori_result : 'N/A'}</Chip></TableCell>
+                          <TableCell>
+                            {isEditMode ? (
+                              <Select
+                                items={counselingStatuses}
+                                defaultSelectedKeys={[String(assessment.apriori_results[0].counseling_statuses.id)]}
+                                value={assessment.apriori_results[0].counseling_statuses_id}
+                                size="sm"
+                                onChange={(newStatusId) => handleTempStatusChange(assessment.id, newStatusId.target.value)}
+                              >
+                                {counselingStatuses.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                              </Select>
+                            ) : (
+                              <Chip color="default">{assessment.apriori_results && assessment.apriori_results.length > 0 ? (assessment.apriori_results[0].counseling_statuses ? assessment.apriori_results[0].counseling_statuses.name : 'N/A') : 'N/A'}</Chip>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="w-full flex justify-end items-center my-4">
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button variant="shadow" color="primary" onClick={handleGenerateButton}>Generate Report</Button>
+                      </PopoverTrigger>
+                      {<PopoverContent hidden={!popoverMessage}>
+                        {popoverMessage}
+                      </PopoverContent>}
+                    </Popover>
+                  </div>
+                  <div className="w-full flex flex-row justify-between items-center pb-1">
+                    <h1 className="text-xl font-bold pb-3">Result Interpretations</h1>
+                  </div>
+                  <Table removeWrapper selectionMode="single" aria-label="Result Interpretations Table">
+                    <TableHeader aria-label="Result Interpretations Table Header">
+                      <TableColumn>Result</TableColumn>
+                      <TableColumn>Scenario</TableColumn>
+                      <TableColumn>Description</TableColumn>
+                    </TableHeader>
+                    <TableBody className="overflow-auto" aria-label="Result Interpretations Table Body">
+                      {assessmentScenarios.map((scenario) => (
+                        <TableRow key={scenario.id}>
+                          <TableCell>{scenario.id}</TableCell>
+                          <TableCell><Chip size="sm" radius="full" color={scenario.color}>{scenario.name}</Chip></TableCell>
+                          <TableCell>{scenario.description}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardBody>
+              </>
+            }
           </>
         )}
       </Card>
