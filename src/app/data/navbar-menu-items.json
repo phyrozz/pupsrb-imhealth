@@ -8,6 +8,10 @@
     "href": "/students"
   },
   {
+    "name": "Assessments",
+    "href": "/student-assessments"
+  },
+  {
     "name": "My Account",
     "href": "/my-account"
   },

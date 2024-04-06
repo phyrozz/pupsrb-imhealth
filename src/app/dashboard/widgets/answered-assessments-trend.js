@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, Progress } from '@nextui-org/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
@@ -25,6 +25,7 @@ export default function AnsweredAssessmentsTrendChart() {
     },
     series: [],
   })
+  const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function fetchScenarioNames() {
@@ -62,28 +63,36 @@ export default function AnsweredAssessmentsTrendChart() {
           ...prevState,
           series: filteredSeriesData,
         }))
+
+        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching chart data:', error.message)
       }
     }
 
     fetchScenarioNames()
-  }, [])
+  }, [supabase])
 
   return (
     <Card>
-      <CardHeader>
-        <p className="font-bold">Answered Assessments Trend</p>
-      </CardHeader>
-      <CardBody>
-        <Chart
-          options={chartData.options}
-          series={chartData.series}
-          type="line"
-          width={"100%"}
-          height={400}
-        />
-      </CardBody>
+      {isLoading ? 
+      <Progress isIndeterminate size="sm" aria-label="Loading Chart..." /> 
+      :
+      <>
+        <CardHeader>
+          <p className="font-bold">Answered Assessments Trend</p>
+        </CardHeader>
+        <CardBody>
+          <Chart
+            options={chartData.options}
+            series={chartData.series}
+            type="line"
+            width={"100%"}
+            height={400}
+          />
+        </CardBody>
+      </>
+      }
     </Card>
   )
 }

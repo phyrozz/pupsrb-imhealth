@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, Progress } from '@nextui-org/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
@@ -11,6 +11,7 @@ const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
 
 export default function AssessmentResultsDonutChart() {  
   const [chartData, setChartData] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function getAssessmentResultCounts() {
@@ -22,6 +23,7 @@ export default function AssessmentResultsDonutChart() {
         }
 
         setChartData(data)
+        setIsLoading(false)
       } catch (error) {
         console.error("Error fetching assessment result counts:", error.message)
       }
@@ -35,47 +37,53 @@ export default function AssessmentResultsDonutChart() {
 
   return (
     <Card isBlurred>
-      <CardHeader>
-        <p className="font-bold">Assessment Results</p>
-      </CardHeader>
-      <CardBody>
-        <Chart 
-          options={{
-            chart: {
-              type: 'donut',
-            },
-            labels: chartLabels,
-            legend: {
-              position: 'bottom',
-            },
-            noData: {
-              text: "No available data."
-            },
-            plotOptions: {
-              pie: {
-                expandOnClick: true,
-                donut: {
-                  size: '50%',
-                  labels: {
-                    show: true,
-                    total: {
+      {isLoading ?
+      <Progress isIndeterminate size="sm" aria-label="Loading Chart..." />
+      :
+      <>
+        <CardHeader>
+          <p className="font-bold">Assessment Results</p>
+        </CardHeader>
+        <CardBody>
+          <Chart 
+            options={{
+              chart: {
+                type: 'donut',
+              },
+              labels: chartLabels,
+              legend: {
+                position: 'bottom',
+              },
+              noData: {
+                text: "No available data."
+              },
+              plotOptions: {
+                pie: {
+                  expandOnClick: true,
+                  donut: {
+                    size: '50%',
+                    labels: {
                       show: true,
-                      showAlways: true,
+                      total: {
+                        show: true,
+                        showAlways: true,
+                      }
                     }
                   }
                 }
+              },
+              fill: {
+                type: 'gradient',
               }
-            },
-            fill: {
-              type: 'gradient',
-            }
-          }}
-          series={chartSeries}
-          type="donut"
-          width={"100%"}
-          height={400}
-        />
-      </CardBody>
+            }}
+            series={chartSeries}
+            type="donut"
+            width={"100%"}
+            height={400}
+          />
+        </CardBody>
+      </>
+      }
     </Card>
   )
 }

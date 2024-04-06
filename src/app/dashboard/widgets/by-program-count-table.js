@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, Progress } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
@@ -11,6 +11,7 @@ export default function ProgramCountTable() {
   const supabase = createClientComponentClient({supabaseUrl: supabaseUrl, supabaseKey: supabaseKey})
 
   const [chartData, setChartData] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function getProgramCounts() {
@@ -22,6 +23,7 @@ export default function ProgramCountTable() {
         }
 
         setChartData(programCounts)
+        setIsLoading(false)
       } catch (e) {
         console.error("Failed to fetch program count data: ", e)
       }
@@ -35,43 +37,49 @@ export default function ProgramCountTable() {
 
   return (
     <Card isBlurred>
-      <CardHeader>
-        <p className="font-bold">Participating Students</p>
-      </CardHeader>
-      <CardBody>
-        <Chart 
-          options={{
-            chart: {
-              type: 'bar',
-            },
-            labels: chartLabels,
-            plotOptions: {
-              bar: {
-                borderRadius: 5,
-                horizontal: true,
-              }
-            },
-          }}
-          series={[{ data: chartSeries }]}
-          type="bar"
-          width={"100%"}
-          height={400}
-        />
-        {/* <Table className="max-h-96" removeWrapper>
-          <TableHeader>
-            <TableColumn>ID</TableColumn>
-            <TableColumn align="end">Number of Students</TableColumn>
-          </TableHeader>
-          <TableBody className="overflow-auto">
-            {Object.entries(counts).map(([programId, count], index) => (
-              <TableRow key={index}>
-                <TableCell>{programId}</TableCell>
-                <TableCell align="end">{count}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
-      </CardBody>
+      {isLoading ?
+      <Progress isIndeterminate size="sm" aria-label="Loading Chart..." />
+      :
+      <>
+        <CardHeader>
+          <p className="font-bold">Participating Students</p>
+        </CardHeader>
+        <CardBody>
+          <Chart 
+            options={{
+              chart: {
+                type: 'bar',
+              },
+              labels: chartLabels,
+              plotOptions: {
+                bar: {
+                  borderRadius: 5,
+                  horizontal: true,
+                }
+              },
+            }}
+            series={[{ data: chartSeries }]}
+            type="bar"
+            width={"100%"}
+            height={400}
+          />
+          {/* <Table className="max-h-96" removeWrapper>
+            <TableHeader>
+              <TableColumn>ID</TableColumn>
+              <TableColumn align="end">Number of Students</TableColumn>
+            </TableHeader>
+            <TableBody className="overflow-auto">
+              {Object.entries(counts).map(([programId, count], index) => (
+                <TableRow key={index}>
+                  <TableCell>{programId}</TableCell>
+                  <TableCell align="end">{count}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table> */}
+        </CardBody>
+      </>
+      }
     </Card>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { Card, CardHeader, CardBody } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, Progress } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
@@ -11,6 +11,7 @@ export default function ParticipatedSessionsChart() {
   const supabase = createClientComponentClient({ supabaseUrl: supabaseUrl, supabaseKey: supabaseKey })
 
   const [chartSeries, setChartSeries] = React.useState([0, 0, 0])
+  const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function getSessionCounts() {
@@ -23,39 +24,46 @@ export default function ParticipatedSessionsChart() {
           sessions.push(count)
         }
         
-        setChartSeries([{ data: sessions }]);
+        setChartSeries([{ data: sessions }])
+        setIsLoading(false)
       } catch (error) {
         console.error("Failed to fetch session counts:", error.message)
       }
     }
 
-    getSessionCounts();
+    getSessionCounts()
   }, [supabase])
 
   return (
     <Card isBlurred>
-      <CardHeader>
-        <p className="font-bold">Answered Assessments by Sessions</p>
-      </CardHeader>
-      <CardBody>
-        <Chart
-          options={{
-            chart: {
-              type: 'bar',
-            },
-            labels: ["None", "Session 1", "Session 2", "Session 3"],
-            plotOptions: {
-              bar: {
-                borderRadius: 5,
-              }
-            },
-          }}
-          series={chartSeries}
-          type="bar"
-          width={"100%"}
-          height={400}
-        />
-      </CardBody>
+      {isLoading ?
+      <Progress isIndeterminate size="sm" aria-label="Loading Chart..." />
+      :
+      <>
+        <CardHeader>
+          <p className="font-bold">Answered Assessments by Sessions</p>
+        </CardHeader>
+        <CardBody>
+          <Chart
+            options={{
+              chart: {
+                type: 'bar',
+              },
+              labels: ["None", "Session 1", "Session 2", "Session 3"],
+              plotOptions: {
+                bar: {
+                  borderRadius: 5,
+                }
+              },
+            }}
+            series={chartSeries}
+            type="bar"
+            width={"100%"}
+            height={400}
+          />
+        </CardBody>
+      </>
+      }
     </Card>
   )
 }
