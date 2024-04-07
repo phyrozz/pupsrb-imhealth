@@ -13,10 +13,10 @@ export default function ConfirmSendEmailModal({isOpen, onOpenChange, onClose, on
       <ModalContent>
         <>
           <ModalHeader>
-            <h1>Confirm to send email</h1>
+            <h1>Confirm changes</h1>
           </ModalHeader>
           <ModalBody>
-            <p>Saving your changes will send an email to the student about the updated status of their assessment(s). Are you sure you want to save your changes?</p>
+            <p>Are you sure you want to save your changes?</p>
           </ModalBody>
           <ModalFooter>
             <Button onPress={onCancel}>Cancel</Button>

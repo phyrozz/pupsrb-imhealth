@@ -54,7 +54,6 @@ export default function StudentTable() {
           page_number: page
       })
 
-      console.log(data)
       if (error) {
         throw error
       }

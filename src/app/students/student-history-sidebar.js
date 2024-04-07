@@ -134,13 +134,6 @@ export default function StudentHistorySidebar({ user, onClose }) {
     }
   }  
 
-  React.useEffect(() => {
-    setIsLoading(true)
-    getAssessmentScenarios()
-    getAssessmentHistory()
-    getCurrentUserRole()
-  }, [user, getAssessmentHistory])
-
   const handleRowClick = (id) => {
     setSelectedAssessment(id)
     onAssessmentResponsesModalOpen()
@@ -221,58 +214,56 @@ export default function StudentHistorySidebar({ user, onClose }) {
     }
   }
 
-  // const handleUpdateStatus = async (assessmentId, newStatusId) => {
-  //   try {
-  //     // Update the counseling status for the selected assessment in Supabase
-  //     const { data } = await supabase
-  //       .from("apriori_results")
-  //       .update({ "counseling_status_id": newStatusId })
-  //       .select(`counseling_statuses!inner(name)`)
-  //       .eq("assessment_id", assessmentId)
-  
-  //     // Find the name of the new status
-  //     const newStatus = counselingStatuses.find((status) => status.name === data[0].counseling_statuses.name)
-  
-  //     // Update the local assessment history with the new status
-  //     setAssessmentHistory((prevHistory) =>
-  //     prevHistory.map((assessment) =>
-  //       assessment.id === assessmentId
-  //         ? {
-  //             ...assessment,
-  //             apriori_results: assessment.apriori_results.map((result) =>
-  //                   ({
-  //                     ...result,
-  //                     counseling_statuses: { 
-  //                       name: newStatus.name,
-  //                       id: newStatus.id,
-  //                     },
-  //                   })
-  //             ),
-  //         }
-  //         : assessment
-  //       )
-  //     )
-
-  //     // Set to true when any changes were made on the status dropdowns to make the confirm modal appear
-  //     setHasMadeChanges(true)
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }  
-
-  const handleTempStatusChange = (assessmentId, newStatusId) => {
+  const handleTempStatusChange = (assessmentId, newStatusId, createdAt) => {
     setTempStatusChanges(prevState => ({
       ...prevState,
-      [assessmentId]: newStatusId
+      [assessmentId]: {newStatusId, createdAt}
     }))
 
     setHasMadeChanges(true)
   }
 
+  const sendEmail = async (userId, assessmentTimestamps) => {
+    try {
+      const { data: userSession, error: userError } = await supabase.auth.getSession()
+
+      if (userError) { throw userError }
+
+      const { data: personalDetailsData, error: personalDetailsError } = await supabase
+        .from('personal_details')
+        .select('email, first_name')
+        .eq('user_id', userId)
+        .single()
+
+      if (personalDetailsError) { throw personalDetailsError }
+
+      const { email, first_name: firstName } = personalDetailsData
+
+      const response = await fetch('/api/send-status-update-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userSession.session.access_token}`,
+        },
+        body: JSON.stringify({ email, firstName, assessmentTimestamps }),
+      })
+  
+      if (!response.ok) {
+        throw new Error('Failed to send email')
+      }
+  
+      const data = await response.json()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const handleConfirmChanges = async () => {
     try {
+      let send = false
+
       // Update statuses in Supabase using tempStatusChanges
-      for (const [assessmentId, newStatusId] of Object.entries(tempStatusChanges)) {
+      for (const [assessmentId, {newStatusId, createdAt}] of Object.entries(tempStatusChanges)) {
         const { data } = await supabase
           .from("apriori_results")
           .update({ "counseling_status_id": newStatusId })
@@ -296,8 +287,18 @@ export default function StudentHistorySidebar({ user, onClose }) {
             }))
           }) : assessment)
         )
+
+        // Only send an email if at least one of the status names changed is "Scheduled"
+        if (newName === "Scheduled") {
+          send = true
+        }
       }
-  
+
+      if (send) {
+        const assessmentTimestamps = Object.values(tempStatusChanges).map(({ createdAt }) => createdAt)
+        sendEmail(assessmentHistory[0].user_id, assessmentTimestamps)
+      }
+
       // Reset temporary status changes
       setTempStatusChanges({})
   
@@ -315,6 +316,13 @@ export default function StudentHistorySidebar({ user, onClose }) {
     setTempStatusChanges({})
     onConfirmEmailModalOpenChange()
   }
+
+  React.useEffect(() => {
+    setIsLoading(true)
+    getAssessmentScenarios()
+    getAssessmentHistory()
+    getCurrentUserRole()
+  }, [user, getAssessmentHistory])
   
   return (
     <>
@@ -380,7 +388,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
                                 defaultSelectedKeys={[String(assessment.apriori_results[0].counseling_statuses.id)]}
                                 value={assessment.apriori_results[0].counseling_statuses_id}
                                 size="sm"
-                                onChange={(newStatusId) => handleTempStatusChange(assessment.id, newStatusId.target.value)}
+                                onChange={(newStatusId) => handleTempStatusChange(assessment.id, newStatusId.target.value, assessment.created_at)}
                               >
                                 {counselingStatuses.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                               </Select>
