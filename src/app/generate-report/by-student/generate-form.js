@@ -90,7 +90,9 @@ export default function ByStudentForm() {
           ), 
           created_at, 
           assessment_scenarios!inner(id, name), 
-          counseling_statuses!inner(id, name)`)
+          counseling_statuses!inner(id, name), 
+          assessments!inner(responses)
+          `)
         .eq("profiles.id", selectedStudentKey)
   
       if (counselingStatuses.length) { 
@@ -109,6 +111,8 @@ export default function ByStudentForm() {
       query = query.order("created_at", { ascending: false })
   
       const { data: reportData, error } = await query
+
+      console.log(reportData)
   
       if (error) { throw error }
 

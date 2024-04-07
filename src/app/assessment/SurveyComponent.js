@@ -19,8 +19,31 @@ export default function SurveyComponent({ session }) {
 
   const [allow, setAllow] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(true)
+  const [nextAssessmentDate, setNextAssessmentDate] = React.useState("")
 
   survey.applyTheme(themeJson)
+
+  const getNextAssessmentDate = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("apriori_results")
+        .select("created_at")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single()
+
+      if (error) { throw error }
+
+      const createdAtTimestamp = data.created_at
+      const createdAtDate = new Date(createdAtTimestamp)
+      const twoWeeksLaterDate = new Date(createdAtDate.getTime() + (2 * 7 * 24 * 60 * 60 * 1000))
+      const formattedDate = twoWeeksLaterDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      setNextAssessmentDate(formattedDate)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const getCurrentUserData = React.useCallback(
     async () => {
@@ -42,6 +65,7 @@ export default function SurveyComponent({ session }) {
   
   React.useEffect(() => {
     getCurrentUserData()
+    getNextAssessmentDate()
   }, [getCurrentUserData])
   
 
@@ -98,7 +122,8 @@ export default function SurveyComponent({ session }) {
         <CircularProgress />
       </div> : allow ? <Survey model={survey} /> : 
       <div className="h-96 w-screen flex flex-col justify-center items-center text-slate-900 text-center px-10">
-        You have already answered the form. You can go back to this page two weeks after answering your previous response.
+        <p className="pb-3">You have already answered the form. You can go back to this page two weeks after answering your previous response.</p>
+        <p>Your next assessment will be on <b>{nextAssessmentDate}</b>.</p>
       </div>}
     </>
   )

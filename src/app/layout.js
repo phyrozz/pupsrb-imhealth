@@ -15,9 +15,6 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <WhiteScreenOverlay />
         {children}
-        {/* <WhiteScreenOverlay>
-          {children}
-        </WhiteScreenOverlay> */}
       </body>
     </html>
   )
