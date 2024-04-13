@@ -12,10 +12,6 @@
     "href": "/student-assessments"
   },
   {
-    "name": "My Account",
-    "href": "/my-account"
-  },
-  {
     "name": "Generate Report",
     "href": "/generate-report",
     "dropdownItems": [
@@ -30,5 +26,9 @@
         "href": "/generate-report/by-student"
       }
     ]
+  },
+  {
+    "name": "My Account",
+    "href": "/my-account"
   }
 ]

@@ -1,7 +1,7 @@
 {
   "questions": [
     {
-      "domain": "I",
+      "domain": "Depression",
       "question": "Little interest or pleasure in doing things?"
     },
     {
@@ -9,11 +9,11 @@
       "question": "Feeling down, depressed, or hopeless?"
     },
     {
-      "domain": "II",
+      "domain": "Anger",
       "question": "Feeling more irritated, grouchy, or angry than usual?"
     },
     {
-      "domain": "III",
+      "domain": "Mania",
       "question": "Sleeping less than usual, but still have a lot of energy?"
     },
     {
@@ -21,7 +21,7 @@
       "question": "Starting lots more projects than usual or doing more risky things than usual?"
     },
     {
-      "domain": "IV",
+      "domain": "Anxiety",
       "question": "Feeling nervous, anxious, frightened, worried, or on edge?"
     },
     {
@@ -33,7 +33,7 @@
       "question": "Avoiding situations that make you anxious?"
     },
     {
-      "domain": "V",
+      "domain": "Somatic Symptoms",
       "question": "Unexplained aches and pains (e.g., head, back, joints, abdomen, legs)?"
     },
     {
@@ -41,11 +41,11 @@
       "question": "Feeling that your illnesses are not being taken seriously enough?"
     },
     {
-      "domain": "VI",
+      "domain": "Suicidal Ideation",
       "question": "Thoughts of actually hurting yourself?"
     },
     {
-      "domain": "VII",
+      "domain": "Psychosis",
       "question": "Hearing things other people couldn’t hear, such as voices even when no one was around?"
     },
     {
@@ -53,15 +53,15 @@
       "question": "Feeling that someone could hear your thoughts, or that you could hear what another person was thinking?"
     },
     {
-      "domain": "VIII",
+      "domain": "Sleep Problems",
       "question": "Problems with sleep that affected your sleep quality over all?"
     },
     {
-      "domain": "IX",
+      "domain": "Memory",
       "question": "Problems with memory (e.g., learning new information) or with location (e.g., finding your way home)?"
     },
     {
-      "domain": "X",
+      "domain": "Repetitive Thoughts and Behaviors",
       "question": "Unpleasant thoughts, urges, or images that repeatedly enter your mind?"
     },
     {
@@ -69,11 +69,11 @@
       "question": "Feeling driven to perform certain behaviors or mental acts over and over again?"
     },
     {
-      "domain": "XI",
+      "domain": "Dissociation",
       "question": "Feeling detached or distant from yourself, your body, your physical surroundings, or your memories?"
     },
     {
-      "domain": "XII",
+      "domain": "Personality Functioning",
       "question": "Not knowing who you really are or what you want out of life?"
     },
     {
@@ -81,7 +81,7 @@
       "question": "Not feeling close to other people or enjoying your relationships with them?"
     },
     {
-      "domain": "XIII",
+      "domain": "Substance Use",
       "question": "Drinking at least 4 drinks of any kind of alcohol in a single day?"
     },
     {

@@ -3,7 +3,7 @@ import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import { Table, TR, TH, TD } from '@ag-media/react-pdf-table'
 import IconCalendar from '../svg-icons/calendar'
 
-export default function GeneratePDFByStudent({ reports, scenarioData, startDate, endDate, filters }) {
+export default function GeneratePDFByStudent({ reports, scenarioData, startDate, endDate, recommendations, filters }) {
   const styles = StyleSheet.create({
     page: {
       fontFamily: 'Helvetica',
@@ -46,6 +46,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
     },
     tableText: {
       fontSize: 8,
+      flexWrap: "wrap"
     },
     tableHeader: {
       border: 1,
@@ -69,7 +70,8 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
     },
     remarks: {
       borderRadius: 5,
-      padding: 100,
+      padding: 20,
+      fontSize: 12,
     }
   })
 
@@ -85,6 +87,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       createdAt: item.created_at,
       counselingStatus: item.counseling_statuses.name,
       result: item.assessment_scenarios.name,
+      domains: item.domains
     }));
     const scenarios = scenarioData.map((item) => ({
       name: item.name,
@@ -127,15 +130,17 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       </View>}
       <Table>
         <TH style={styles.tableHeader}>
-          <TD weighting={0.5} style={styles.tableCell}><Text style={styles.tableHeaderText}>Answered at</Text></TD>
-          <TD weighting={0.5} style={styles.tableCell}><Text style={styles.tableHeaderText}>Counseling Status</Text></TD>
-          <TD weighting={0.5} style={styles.tableCell}><Text style={styles.tableHeaderText}>Assessment Result</Text></TD>
+          <TD weighting={0.25} style={styles.tableCell}><Text style={styles.tableHeaderText}>Answered at</Text></TD>
+          <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Counseling Status</Text></TD>
+          <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Assessment Result</Text></TD>
+          <TD weighting={0.35} style={styles.tableCell}><Text style={styles.tableHeaderText}>Possible issues related to</Text></TD>
         </TH>
         {data.map((item, index) => (
           <TR key={index}>
-            <TD weighting={0.5} style={styles.tableCell}><Text style={styles.tableText}>{formattedDateTime(item.createdAt)}</Text></TD>
-            <TD weighting={0.5} style={styles.tableCell}><Text style={styles.tableText}>{item.counselingStatus}</Text></TD>
-            <TD weighting={0.5} style={styles.boldedTableCellRow}><Text style={styles.tableText}>{item.result}</Text></TD>
+            <TD weighting={0.25} style={styles.tableCell}><Text style={styles.tableText}>{formattedDateTime(item.createdAt)}</Text></TD>
+            <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableText}>{item.counselingStatus}</Text></TD>
+            <TD weighting={0.20} style={styles.boldedTableCellRow}><Text style={styles.tableText}>{item.result}</Text></TD>
+            <TD weighting={0.35} style={styles.boldedTableCellRow}><Text style={styles.tableText}>{item.domains.length ? (item.domains.map(item => item.domain_name)).join(', ') : "None"}</Text></TD>
           </TR>
         ))}
       </Table>
@@ -170,10 +175,37 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
         {reportData.length > 0 && <AssessmentReport data={reportData} />}
         <ScenarioTable scenarios={scenarios} />
         <View style={styles.section}>
-          <Text style={styles.subHeader}>Remarks</Text>
+          <Text style={styles.subHeader}>Narrative Interpretations</Text>
           <Table>
-            <TR>
-              <TD style={styles.remarks}></TD>
+            {reportData.map((item, index) => 
+              <TR key={index}>
+                <TD style={styles.tableCell}>
+                  <View>
+                    <Text style={styles.boldedText}>{formattedDateTime(item.createdAt)}</Text>
+                    {item.domains.length ? <>
+                      <Text style={styles.text}>Possible issues related to:</Text>
+                      {item.domains.map((domain) => 
+                        <Text style={styles.boldedText}>{domain.domain_name}</Text>
+                      )}
+                    </> : <Text style={styles.text}>No possible issues.</Text>}
+                  </View>
+                  {/* {item.domains.map((domain) => 
+                    <View style={{flexDirection: "column", width: 400}}>
+                      <View style={{ flexDirection: "row", marginBottom: 4 }}>
+                        <Text style={{ marginHorizontal: 8 }}>•</Text>
+                        <Text>{domain.domain_name}</Text>
+                      </View>
+                    </View>
+                  )} */}
+                </TD>
+              </TR>
+            )}
+            
+          </Table>
+          <Text style={styles.subHeader}>Recommendations/Referral</Text>
+          <Table>
+            <TR key={0}>
+              <TD style={styles.remarks}>{recommendations}</TD>
             </TR>
           </Table>
         </View>

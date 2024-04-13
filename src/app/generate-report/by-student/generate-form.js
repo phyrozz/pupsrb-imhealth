@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress, Popover, PopoverTrigger, PopoverContent, Autocomplete, AutocompleteItem } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress, Popover, PopoverTrigger, PopoverContent, Autocomplete, AutocompleteItem, Textarea } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { pdf } from '@react-pdf/renderer'
 import { saveAs } from 'file-saver'
@@ -24,7 +24,10 @@ export default function ByStudentForm() {
   const { items, hasMore, isLoading, onLoadMore } = useStudentList({ supabase, filterText })
   const [selectedCounselingStatuses, setselectedCounselingStatuses] = React.useState("")
   const [selectedAssessmentResults, setSelectedAssessmentResults] = React.useState("")
+  const [selectedDomains, setSelectedDomains] = React.useState("")
   const [popoverMessage, setPopoverMessage] = React.useState(null)
+  const [domains, setDomains] = React.useState([])
+  const [recommendations, setRecommendations] = React.useState("")
 
   const assessmentResultItems = ["0", "1", "2", "3"]
 
@@ -45,6 +48,23 @@ export default function ByStudentForm() {
     [supabase],
   )
 
+  const getDomains = React.useCallback(
+    async () => {
+      try {
+        const { data: domainsData, error } = await supabase.from("assessment_domains").select(`*`)
+  
+        if (error) {
+          throw error
+        }
+  
+        setDomains(domainsData)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [supabase],
+  )
+
   const handleDateChange = (e) => {
     const { name, value } = e.target
     if (name === 'startDate') {
@@ -54,6 +74,10 @@ export default function ByStudentForm() {
       // Update maxDate when the end date changes
       setMaxDate(value)
     }
+  }
+
+  const handleDomainsChange = (e) => {
+    setSelectedDomains(e.target.value)
   }
 
   const handleCounselingStatusChange = (e) => {
@@ -66,9 +90,9 @@ export default function ByStudentForm() {
 
   const generatePdf = async (e) => {
     e.preventDefault()
-    // let programs = selectedPrograms.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let counselingStatuses = selectedCounselingStatuses.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let assessmentResults = selectedAssessmentResults.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
+    let domainIds = selectedDomains.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let filters = []
 
     try {
@@ -111,8 +135,27 @@ export default function ByStudentForm() {
       query = query.order("created_at", { ascending: false })
   
       const { data: reportData, error } = await query
+      
+      // For the domainData. Currently the rpc only reads the array structure of mappedData and not reportData
+      // It will throw a postgres error for some reason
+      const mappedData = reportData.map(item => {
+        return {
+          assessment_scenario: item.assessment_scenarios.name,
+          created_at: item.created_at,
+          responses: item.assessments.responses
+        }
+      })
 
-      console.log(reportData)
+      const { data: domainData } = await supabase.rpc("filter_assessments_by_domains", { mappeddata: mappedData, domain_ids: domainIds.length > 0 ? domainIds : Array.from({ length: 13 }, (_, i) => i + 1) })
+
+      // merge domainData with reportData
+      reportData.forEach((report, index) => {
+        if (domainData[index]) {
+            report['domains'] = domainData[index].response;
+        } else {
+            report['domains'] = [];
+        }
+      })
   
       if (error) { throw error }
 
@@ -132,6 +175,7 @@ export default function ByStudentForm() {
           scenarioData={scenarioData} 
           startDate={minDate}
           endDate={maxDate}
+          recommendations={recommendations}
           filters={filters}
         />).toBlob()
         .then((blob) => {
@@ -147,10 +191,6 @@ export default function ByStudentForm() {
       console.error(error)
     }
   }  
-  
-  React.useEffect(() => {
-    getCounselingStatuses()
-  }, [getCounselingStatuses])
 
   const [, scrollerRef] = useInfiniteScroll({
     hasMore,
@@ -172,6 +212,11 @@ export default function ByStudentForm() {
     setFilterText(null)
   }
 
+  React.useEffect(() => {
+    getCounselingStatuses()
+    getDomains()
+  }, [getCounselingStatuses, getDomains])
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -189,7 +234,7 @@ export default function ByStudentForm() {
           <CardBody className="overflow-auto max-h-[60vh]">
             <div className="flex flex-col gap-3">
               <Autocomplete                
-                inputValue={filterText}
+                defaultInputValue={filterText}
                 value={filterText}
                 isLoading={isLoading}
                 defaultItems={items}
@@ -220,6 +265,40 @@ export default function ByStudentForm() {
               
               <p className="font-bold text-sm pt-4">Filter by:</p>
 
+              <Select
+                items={domains}
+                label="Domain(s)"
+                isMultiline={true}
+                selectionMode="multiple"
+                labelPlacement="outside"
+                placeholder={
+                  <Chip color="primary">All</Chip>
+                }
+                classNames={{
+                  trigger: "min-h-unit-12 py-2",
+                }}
+                renderValue={(items) => {
+                  return (
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((item) => (
+                        <Chip key={item.key} color="primary">{item.data.name}</Chip>
+                      ))}
+                    </div>
+                  )
+                }}
+                onChange={handleDomainsChange}
+                description="Assessments will be filtered with possible issues related to the selected domain(s)."
+              >
+                {(status) => (
+                  <SelectItem key={status.id} textValue={status.id}>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex flex-col">
+                        <span className="text-small">{status.name}</span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
               <Select
                 items={counselingStatuses}
                 label="Counseling Status(es)"
@@ -280,6 +359,9 @@ export default function ByStudentForm() {
                   ))
                 }
               </Select>
+            </div>
+            <div className="pt-10">
+              <Textarea label="Recommendations/Referral" value={recommendations} onValueChange={setRecommendations} />
             </div>
           </CardBody>
           <CardFooter>
