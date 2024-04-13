@@ -184,8 +184,8 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
                     <Text style={styles.boldedText}>{formattedDateTime(item.createdAt)}</Text>
                     {item.domains.length ? <>
                       <Text style={styles.text}>Possible issues related to:</Text>
-                      {item.domains.map((domain) => 
-                        <Text style={styles.boldedText}>{domain.domain_name}</Text>
+                      {item.domains.map((domain, index) => 
+                        <Text style={styles.boldedText} key={index}>{domain.domain_name}</Text>
                       )}
                     </> : <Text style={styles.text}>No possible issues.</Text>}
                   </View>
