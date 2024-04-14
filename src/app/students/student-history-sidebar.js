@@ -13,14 +13,14 @@ import {
   TableRow,
   Chip,
   useDisclosure,
-  Popover, PopoverContent, PopoverTrigger,
+  // Popover, PopoverContent, PopoverTrigger,
   Select, SelectItem
 } from "@nextui-org/react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import AssessmentResponsesModal from "./assessment-responses-modal"
-import { pdf } from '@react-pdf/renderer'
-import { saveAs } from 'file-saver'
-import GeneratePDFByStudent from "../generate-report/by-student/generate-pdf"
+// import { pdf } from '@react-pdf/renderer'
+// import { saveAs } from 'file-saver'
+// import GeneratePDFByStudent from "../generate-report/by-student/generate-pdf"
 import IconIconEdit from "../components/edit-icon"
 import IconClose from "../components/close-icon"
 import ConfirmSendEmailModal from "./confirm-email-modal"
@@ -37,7 +37,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   const [selectedAssessment, setSelectedAssessment] = React.useState(null)
   const {isOpen: isAssessmentResponsesModalOpen, onOpen: onAssessmentResponsesModalOpen, onOpenChange: onAssessmentResponsesModalOpenChange} = useDisclosure()
   const {isOpen: isConfirmEmailModalOpen, onOpen: onConfirmEmailModalOpen, onOpenChange: onConfirmEmailModalOpenChange} = useDisclosure()
-  const [popoverMessage, setPopoverMessage] = React.useState(null)
+  // const [popoverMessage, setPopoverMessage] = React.useState(null)
   const [userId, setUserId] = React.useState(null)
   const [isEditMode, setIsEditMode] = React.useState(false)
   const [counselingStatuses, setCounselingStatuses] = React.useState([])
@@ -146,61 +146,61 @@ export default function StudentHistorySidebar({ user, onClose }) {
     setHasMadeChanges(false)
   }
 
-  const handleGenerateButton = async () => {
-    try {
-      let query = supabase
-        .from("apriori_results")
-        .select(
-          `profiles!inner(
-            id, personal_details!inner(
-              first_name, 
-              middle_name, 
-              last_name, 
-              name_suffix,
-              programs!inner(id, name, initial),
-              year,
-              marital_statuses!inner(id, status),
-              email,
-              student_number
-            )
-          ), 
-          created_at, 
-          assessment_scenarios!inner(id, name), 
-          counseling_statuses!inner(id, name)`)
-        .eq("profiles.id", userId)
+  // const handleGenerateButton = async () => {
+  //   try {
+  //     let query = supabase
+  //       .from("apriori_results")
+  //       .select(
+  //         `profiles!inner(
+  //           id, personal_details!inner(
+  //             first_name, 
+  //             middle_name, 
+  //             last_name, 
+  //             name_suffix,
+  //             programs!inner(id, name, initial),
+  //             year,
+  //             marital_statuses!inner(id, status),
+  //             email,
+  //             student_number
+  //           )
+  //         ), 
+  //         created_at, 
+  //         assessment_scenarios!inner(id, name), 
+  //         counseling_statuses!inner(id, name)`)
+  //       .eq("profiles.id", userId)
   
-      const { data: reportData, error } = await query
+  //     const { data: reportData, error } = await query
   
-      if (error) { throw error }
+  //     if (error) { throw error }
 
-      const { data: scenarioData, error: scenarioError } = await supabase
-        .from('assessment_scenarios')
-        .select('name, description')
-        .order('id')
+  //     const { data: scenarioData, error: scenarioError } = await supabase
+  //       .from('assessment_scenarios')
+  //       .select('name, description')
+  //       .order('id')
 
-      if (scenarioError) {
-        throw scenarioError
-      }
+  //     if (scenarioError) {
+  //       throw scenarioError
+  //     }
       
-      if (reportData.length) {
-        setPopoverMessage("Generating PDF...")
-        await pdf(<GeneratePDFByStudent
-          reports={reportData} 
-          scenarioData={scenarioData} 
-        />).toBlob()
-        .then((blob) => {
-          saveAs(blob, "report.pdf")
-        })
-        setPopoverMessage(null)
-      } else {
-        setPopoverMessage("No results found. Cannot generate PDF.")
-      }
+  //     if (reportData.length) {
+  //       setPopoverMessage("Generating PDF...")
+  //       await pdf(<GeneratePDFByStudent
+  //         reports={reportData} 
+  //         scenarioData={scenarioData} 
+  //       />).toBlob()
+  //       .then((blob) => {
+  //         saveAs(blob, "report.pdf")
+  //       })
+  //       setPopoverMessage(null)
+  //     } else {
+  //       setPopoverMessage("No results found. Cannot generate PDF.")
+  //     }
       
 
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
 
   const handleEditButton = () => {
     if (isEditMode) {
@@ -400,17 +400,17 @@ export default function StudentHistorySidebar({ user, onClose }) {
                       ))}
                     </TableBody>
                   </Table>
-                  <div className="w-full flex justify-end items-center my-4">
+                  {/* <div className="w-full flex justify-end items-center my-4">
                     <Popover>
                       <PopoverTrigger>
-                        <Button variant="shadow" color="primary" onClick={handleGenerateButton}>Generate Report</Button>
+                        <Button as={Link} variant="shadow" color="primary" href="/generate-report/by-student">Generate Report</Button>
                       </PopoverTrigger>
                       {<PopoverContent hidden={!popoverMessage}>
                         {popoverMessage}
                       </PopoverContent>}
                     </Popover>
-                  </div>
-                  <div className="w-full flex flex-row justify-between items-center pb-1">
+                  </div> */}
+                  <div className="w-full flex flex-row justify-between items-center pb-1 pt-4">
                     <h1 className="text-xl font-bold pb-3">Result Interpretations</h1>
                   </div>
                   <Table removeWrapper selectionMode="single" aria-label="Result Interpretations Table">

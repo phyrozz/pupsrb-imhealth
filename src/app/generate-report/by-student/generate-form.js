@@ -24,7 +24,7 @@ export default function ByStudentForm() {
   const { items, hasMore, isLoading, onLoadMore } = useStudentList({ supabase, filterText })
   const [selectedCounselingStatuses, setselectedCounselingStatuses] = React.useState("")
   const [selectedAssessmentResults, setSelectedAssessmentResults] = React.useState("")
-  const [selectedDomains, setSelectedDomains] = React.useState("")
+  const [selectedDomains, setSelectedDomains] = React.useState(null)
   const [popoverMessage, setPopoverMessage] = React.useState(null)
   const [domains, setDomains] = React.useState([])
   const [recommendations, setRecommendations] = React.useState("")
@@ -77,8 +77,17 @@ export default function ByStudentForm() {
   }
 
   const handleDomainsChange = (e) => {
-    setSelectedDomains(e.target.value)
+    const selectedDomainIds = e.target.value.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
+    const selectedDomainNames = domains
+      .filter(domain => selectedDomainIds.includes(domain.id))
+      .map(domain => domain.name)
+    const selectedDomainsObject = {
+      domainIds: selectedDomainIds,
+      domainNames: selectedDomainNames
+    }
+    setSelectedDomains(selectedDomainsObject)
   }
+  
 
   const handleCounselingStatusChange = (e) => {
     setselectedCounselingStatuses(e.target.value)
@@ -92,8 +101,7 @@ export default function ByStudentForm() {
     e.preventDefault()
     let counselingStatuses = selectedCounselingStatuses.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
     let assessmentResults = selectedAssessmentResults.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
-    let domainIds = selectedDomains.split(",").map(item => parseInt(item.trim(), 10)).filter(num => !isNaN(num))
-    let filters = []
+    const filters = {}
 
     try {
       let query = supabase
@@ -121,12 +129,16 @@ export default function ByStudentForm() {
   
       if (counselingStatuses.length) { 
         query = query.in("counseling_statuses.id", counselingStatuses)
-        filters.push(counselingStatuses.join(", "))
       }
       if (assessmentResults.length) { 
         query = query.in("assessment_scenarios.id", assessmentResults)
-        filters.push(assessmentResults.join(", ")) 
       }
+
+      Object.assign(filters, {
+        counselingStatuses: counselingStatuses,
+        assessmentResults: assessmentResults,
+        domains: selectedDomains,
+      })
       
       if (minDate && maxDate) { 
         query = query.gte("created_at", minDate)
@@ -146,23 +158,25 @@ export default function ByStudentForm() {
         }
       })
 
-      const { data: domainData } = await supabase.rpc("filter_assessments_by_domains", { mappeddata: mappedData, domain_ids: domainIds.length > 0 ? domainIds : Array.from({ length: 13 }, (_, i) => i + 1) })
+      const { data: domainData } = await supabase.rpc("filter_assessments_by_domains", { mappeddata: mappedData, domain_ids: selectedDomains.domainIds.length > 0 ? selectedDomains.domainIds : Array.from({ length: 13 }, (_, i) => i + 1) })
 
       // merge domainData with reportData
       reportData.forEach((report, index) => {
         if (domainData[index]) {
-            report['domains'] = domainData[index].response;
+            report['domains'] = domainData[index].response
         } else {
-            report['domains'] = [];
+            report['domains'] = []
         }
       })
+
+      console.log(filters)
   
       if (error) { throw error }
 
       const { data: scenarioData, error: scenarioError } = await supabase
         .from('assessment_scenarios')
         .select('name, description')
-        .order('id');
+        .order('id')
 
       if (scenarioError) {
         throw scenarioError
@@ -179,7 +193,7 @@ export default function ByStudentForm() {
           filters={filters}
         />).toBlob()
         .then((blob) => {
-          saveAs(blob, "report.pdf");
+          saveAs(blob, "report.pdf")
         })
         setPopoverMessage(null)
       } else {

@@ -79,7 +79,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
   const [scenarios, setScenarios] = React.useState([])
 
   React.useEffect(() => {
-    const data = reports.map((item) => ({
+    let data = reports.map((item) => ({
       name: `${item.profiles.personal_details[0].first_name} ${item.profiles.personal_details[0].middle_name} ${item.profiles.personal_details[0].last_name} ${item.profiles.personal_details[0].name_suffix}`,
       studentNumber: item.profiles.personal_details[0].student_number,
       program: item.profiles.personal_details[0].programs.initial,
@@ -88,7 +88,16 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       counselingStatus: item.counseling_statuses.name,
       result: item.assessment_scenarios.name,
       domains: item.domains
-    }));
+    }))
+
+    if (filters.domains.domainNames.length) {
+      // Filter data by selected domains
+      data = data.filter(item => {
+        const itemDomainNames = item.domains.map(domain => domain.domain_name)
+        return filters.domains.domainNames.some(selectedDomain => itemDomainNames.includes(selectedDomain))
+      })
+    }
+
     const scenarios = scenarioData.map((item) => ({
       name: item.name,
       description: item.description,
@@ -165,6 +174,35 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
     </View>
   )
 
+  const NarrativeTable = ({ data }) => (
+    <View style={styles.section}>
+      <Text style={styles.subHeader}>Narrative Interpretations</Text>
+      <Table>
+        {data.map((item, index) => 
+          <TR key={index}>
+            <TD style={styles.tableCell}>
+              <View>
+                <Text style={styles.boldedText}>{formattedDateTime(item.createdAt)}</Text>
+                {item.domains.length ? <>
+                  <Text style={styles.text}>Possible issues related to:</Text>
+                  <Text style={styles.boldedText}>{item.domains.map((domain) => domain.domain_name).join(", ")}</Text>
+                </> : <Text style={styles.text}>No possible issues.</Text>}
+              </View>
+              {/* {item.domains.map((domain) => 
+                <View style={{flexDirection: "column", width: 400}}>
+                  <View style={{ flexDirection: "row", marginBottom: 4 }}>
+                    <Text style={{ marginHorizontal: 8 }}>•</Text>
+                    <Text>{domain.domain_name}</Text>
+                  </View>
+                </View>
+              )} */}
+            </TD>
+          </TR>
+        )}
+      </Table>
+    </View>
+  )
+
   return (
     <Document>
       <Page style={styles.page}>
@@ -174,34 +212,8 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
         </View>
         {reportData.length > 0 && <AssessmentReport data={reportData} />}
         <ScenarioTable scenarios={scenarios} />
+        <NarrativeTable data={reportData} />
         <View style={styles.section}>
-          <Text style={styles.subHeader}>Narrative Interpretations</Text>
-          <Table>
-            {reportData.map((item, index) => 
-              <TR key={index}>
-                <TD style={styles.tableCell}>
-                  <View>
-                    <Text style={styles.boldedText}>{formattedDateTime(item.createdAt)}</Text>
-                    {item.domains.length ? <>
-                      <Text style={styles.text}>Possible issues related to:</Text>
-                      {item.domains.map((domain, index) => 
-                        <Text style={styles.boldedText} key={index}>{domain.domain_name}</Text>
-                      )}
-                    </> : <Text style={styles.text}>No possible issues.</Text>}
-                  </View>
-                  {/* {item.domains.map((domain) => 
-                    <View style={{flexDirection: "column", width: 400}}>
-                      <View style={{ flexDirection: "row", marginBottom: 4 }}>
-                        <Text style={{ marginHorizontal: 8 }}>•</Text>
-                        <Text>{domain.domain_name}</Text>
-                      </View>
-                    </View>
-                  )} */}
-                </TD>
-              </TR>
-            )}
-            
-          </Table>
           <Text style={styles.subHeader}>Recommendations/Referral</Text>
           <Table>
             <TR key={0}>
