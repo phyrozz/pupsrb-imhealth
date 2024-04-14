@@ -90,7 +90,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       domains: item.domains
     }))
 
-    if (filters.domains.domainNames.length) {
+    if (filters.domains) {
       // Filter data by selected domains
       data = data.filter(item => {
         const itemDomainNames = item.domains.map(domain => domain.domain_name)
@@ -140,7 +140,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       <Table>
         <TH style={styles.tableHeader}>
           <TD weighting={0.25} style={styles.tableCell}><Text style={styles.tableHeaderText}>Answered at</Text></TD>
-          <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Counseling Status</Text></TD>
+          <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Status</Text></TD>
           <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Assessment Result</Text></TD>
           <TD weighting={0.35} style={styles.tableCell}><Text style={styles.tableHeaderText}>Possible issues related to</Text></TD>
         </TH>
@@ -182,11 +182,11 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
           <TR key={index}>
             <TD style={styles.tableCell}>
               <View>
-                <Text style={styles.boldedText}>{formattedDateTime(item.createdAt)}</Text>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", marginBottom: 5 }}>{formattedDateTime(item.createdAt)}</Text>
                 {item.domains.length ? <>
-                  <Text style={styles.text}>Possible issues related to:</Text>
+                  <Text style={{ fontSize: 9 }}>Possible issues related to:</Text>
                   <Text style={styles.boldedText}>{item.domains.map((domain) => domain.domain_name).join(", ")}</Text>
-                </> : <Text style={styles.text}>No possible issues.</Text>}
+                </> : <Text style={styles.boldedText}>No possible issues.</Text>}
               </View>
               {/* {item.domains.map((domain) => 
                 <View style={{flexDirection: "column", width: 400}}>

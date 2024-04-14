@@ -288,8 +288,8 @@ export default function StudentHistorySidebar({ user, onClose }) {
           }) : assessment)
         )
 
-        // Only send an email if at least one of the status names changed is "Scheduled"
-        if (newName === "Scheduled") {
+        // Only send an email if at least one of the status names changed is "For Additional Inquiry"
+        if (newName === "For Additional Inquiry") {
           send = true
         }
       }
@@ -374,7 +374,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
                     <TableHeader aria-label="Assessment History Table Header">
                       <TableColumn></TableColumn>
                       <TableColumn>Result</TableColumn>
-                      <TableColumn>Counseling Status</TableColumn>
+                      <TableColumn>Status</TableColumn>
                     </TableHeader>
                     <TableBody className="overflow-auto" emptyContent={"No answered assessment."} aria-label="Assessment History Table Body">
                       {assessmentHistory.map((assessment) => (

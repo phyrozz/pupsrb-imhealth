@@ -158,7 +158,7 @@ export default function ByStudentForm() {
         }
       })
 
-      const { data: domainData } = await supabase.rpc("filter_assessments_by_domains", { mappeddata: mappedData, domain_ids: selectedDomains.domainIds.length > 0 ? selectedDomains.domainIds : Array.from({ length: 13 }, (_, i) => i + 1) })
+      const { data: domainData } = await supabase.rpc("filter_assessments_by_domains", { mappeddata: mappedData, domain_ids: selectedDomains ? selectedDomains.domainIds : Array.from({ length: 13 }, (_, i) => i + 1) })
 
       // merge domainData with reportData
       reportData.forEach((report, index) => {
@@ -168,8 +168,6 @@ export default function ByStudentForm() {
             report['domains'] = []
         }
       })
-
-      console.log(filters)
   
       if (error) { throw error }
 
