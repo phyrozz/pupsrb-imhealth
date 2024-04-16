@@ -124,6 +124,7 @@ export default function StudentTable() {
             <IconFiltering />
             <Autocomplete
               label="by No. of Session"
+              size="sm"
               className="max-w-40"
               isClearable={false}
               defaultSelectedKey={"1"}
@@ -138,6 +139,7 @@ export default function StudentTable() {
             <Autocomplete
               label="by Program"
               items={programs}
+              size="sm"
               className="max-w-40"
               isClearable={false}
               defaultSelectedKey={""}
@@ -154,6 +156,7 @@ export default function StudentTable() {
               isClearable
               variant="faded"
               radius="md"
+              size="lg"
               className="w-96"
               placeholder="Search for student..."
               value={searchQuery}
