@@ -95,7 +95,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
     }
   }
 
-  const getCurrentUserRole = async () => {
+  const getCurrentUserRole = React.useCallback(async () => {
     try {
       const { data: userSession, error: userError } = await supabase.auth.getSession()
 
@@ -110,9 +110,9 @@ export default function StudentHistorySidebar({ user, onClose }) {
     } catch (error) {
       console.error(error)
     }
-  }
+  }, [supabase])
 
-  const getAssessmentScenarios = async () => {
+  const getAssessmentScenarios = React.useCallback(async () => {
     try {
       const { data: scenarioData, error: scenarioError } = await supabase
         .from("assessment_scenarios")
@@ -132,7 +132,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
     } catch (error) {
       console.error(error)
     }
-  }  
+  }, [supabase])
 
   const handleRowClick = (id) => {
     setSelectedAssessment(id)
@@ -322,7 +322,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
     getAssessmentScenarios()
     getAssessmentHistory()
     getCurrentUserRole()
-  }, [user, getAssessmentHistory])
+  }, [user, getAssessmentHistory, getAssessmentScenarios, getCurrentUserRole])
   
   return (
     <>

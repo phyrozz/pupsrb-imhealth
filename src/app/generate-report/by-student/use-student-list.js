@@ -7,7 +7,7 @@ export function useStudentList({ supabase, filterText }) {
   const [offset, setOffset] = React.useState(0);
   const limit = 10; // Number of items per page, adjust as necessary
 
-  const loadStudent = async () => {  
+  const loadStudent = React.useCallback(async () => {  
     try {
       setIsLoading(true);
   
@@ -36,11 +36,11 @@ export function useStudentList({ supabase, filterText }) {
     } finally {
       setIsLoading(false)
     }
-  }  
+  }, [filterText, offset, supabase])
 
   React.useEffect(() => {
     loadStudent()
-  }, [filterText, offset])
+  }, [filterText, loadStudent, offset])
 
   const onLoadMore = () => {
     const newOffset = offset + limit;

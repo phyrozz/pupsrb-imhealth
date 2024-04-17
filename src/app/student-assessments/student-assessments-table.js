@@ -48,60 +48,69 @@ export default function StudentAssessmentsTable() {
 
   const pages = Math.ceil(assessmentCount / rowsPerPage)
 
-  const getAssessments = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_assessments_table", { 
-        search_query: searchQuery,
-        selected_scenario_name: filterByScenario,
-        selected_status_name: filterByStatusName,
-        page_size: rowsPerPage,
-        page_number: page
-      }) 
+  const getAssessments = React.useCallback(
+    async () => {
+      try {
+        const { data, error } = await supabase.rpc("get_assessments_table", { 
+          search_query: searchQuery,
+          selected_scenario_name: filterByScenario,
+          selected_status_name: filterByStatusName,
+          page_size: rowsPerPage,
+          page_number: page
+        }) 
+  
+        if (error) { throw error }
+  
+        // Map through data and add color key to each assessment object
+        const assessmentsWithColor = data.map(assessment => ({
+          ...assessment,
+          color: getColorForAprioriResult(assessment.result_scenario)
+        }))
+  
+        setAssessments(assessmentsWithColor)
+        setAssessmentCount(data[0].total_count)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [filterByScenario, filterByStatusName, page, searchQuery, supabase],
+  )
 
-      if (error) { throw error }
+  const getScenarios = React.useCallback(
+    async () => {
+      try {
+        const { data, error } = await supabase
+          .from("assessment_scenarios")
+          .select(`name`)
+        
+        if (error) { throw error }
+  
+        setScenarios(data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [supabase],
+  )
 
-      // Map through data and add color key to each assessment object
-      const assessmentsWithColor = data.map(assessment => ({
-        ...assessment,
-        color: getColorForAprioriResult(assessment.result_scenario)
-      }))
-
-      setAssessments(assessmentsWithColor)
-      setAssessmentCount(data[0].total_count)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const getScenarios = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("assessment_scenarios")
-        .select(`name`)
-      
-      if (error) { throw error }
-
-      setScenarios(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const getStatusNames = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("counseling_statuses")
-        .select(`name`)
-      
-      if (error) { throw error }
-
-      setStatusNames(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const getStatusNames = React.useCallback(
+    async () => {
+      try {
+        const { data, error } = await supabase
+          .from("counseling_statuses")
+          .select(`name`)
+        
+        if (error) { throw error }
+  
+        setStatusNames(data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [supabase],
+  )
 
   const getColorForAprioriResult = (result) => {
     switch (result) {
@@ -152,7 +161,7 @@ export default function StudentAssessmentsTable() {
     getAssessments()
     getScenarios()
     getStatusNames()
-  }, [page, searchQuery, filterByScenario, filterByStatusName])
+  }, [page, searchQuery, filterByScenario, filterByStatusName, getAssessments, getScenarios, getStatusNames])
 
   return (
     <>

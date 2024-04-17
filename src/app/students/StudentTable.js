@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useCallback } from 'react'
 import { 
   Table, 
   TableHeader, 
@@ -43,44 +43,50 @@ export default function StudentTable() {
 
   const pages = Math.ceil(studentCount / rowsPerPage)
 
-  const getStudents = async () => {
-    try {
-      const { data, error } = await supabase
-        .rpc('get_users_with_multiple_assessments', { 
-          result_count: filterBySession, 
-          selected_program_initial: filterByProgram,
-          search_query: searchQuery,
-          page_size: rowsPerPage,
-          page_number: page
-      })
-
-      if (error) {
-        throw error
+  const getStudents = useCallback(
+    async () => {
+      try {
+        const { data, error } = await supabase
+          .rpc('get_users_with_multiple_assessments', { 
+            result_count: filterBySession, 
+            selected_program_initial: filterByProgram,
+            search_query: searchQuery,
+            page_size: rowsPerPage,
+            page_number: page
+        })
+  
+        if (error) {
+          throw error
+        }
+  
+        setStudentCount(data[0].total_count)
+        setStudents(data)
+      } catch (e) {
+        setStudents([])
+        console.error(e)
+      } finally {
+        setIsLoading(false)
       }
+    },
+    [filterByProgram, filterBySession, page, searchQuery, supabase],
+  )
 
-      setStudentCount(data[0].total_count)
-      setStudents(data)
-    } catch (e) {
-      setStudents([])
-      console.error(e)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const getPrograms = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("programs")
-        .select(`initial`)
-      
-      if (error) { throw error }
-
-      setPrograms(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const getPrograms = useCallback(
+    async () => {
+      try {
+        const { data, error } = await supabase
+          .from("programs")
+          .select(`initial`)
+        
+        if (error) { throw error }
+  
+        setPrograms(data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [supabase],
+  )
 
   const handleRowClick = (user) => {
     setSelectedUser(user)
@@ -110,7 +116,7 @@ export default function StudentTable() {
   React.useEffect(() => {
     getPrograms()
     getStudents()
-  }, [page, searchQuery, filterBySession, filterByProgram])
+  }, [page, searchQuery, filterBySession, filterByProgram, getPrograms, getStudents])
 
   return (
     <>

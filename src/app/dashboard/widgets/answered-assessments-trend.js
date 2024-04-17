@@ -71,7 +71,7 @@ export default function AnsweredAssessmentsTrendChart() {
     }
 
     fetchScenarioNames()
-  }, [supabase])
+  }, [])
 
   return (
     <Card>

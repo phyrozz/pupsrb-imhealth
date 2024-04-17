@@ -11,7 +11,7 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
   const [responses, setResponses] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const getAssessmentResponse = async () => {
+  const getAssessmentResponse = React.useCallback(async () => {
     try {
       const { data, error, status } = await supabase
         .from("assessments")
@@ -27,14 +27,14 @@ export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenC
     } catch (e) {
       console.error(e)
     }
-  };
+  }, [assessmentId, supabase])
 
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true)
       getAssessmentResponse()
     }
-  }, [assessmentId, isOpen])
+  }, [assessmentId, getAssessmentResponse, isOpen])
 
   const getChipColor = (responseIndex) => {
     const responseValue = responses[responseIndex]

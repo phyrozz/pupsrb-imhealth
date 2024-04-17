@@ -30,7 +30,7 @@ export default function AssessmentResultsDonutChart() {
     }
 
     getAssessmentResultCounts()
-  }, [supabase])
+  }, [])
 
   const chartLabels = chartData.map(result => result.scenario_name)
   const chartSeries = chartData.map(result => result.result_count)

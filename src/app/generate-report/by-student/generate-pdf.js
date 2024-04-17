@@ -104,7 +104,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
     }))
     setReportData(data)
     setScenarios(scenarios)
-  }, [reports, scenarioData])
+  }, [filters.domains, reports, scenarioData])
 
   const formattedDateTime = (datetimeString) => {
     const date = new Date(datetimeString);
