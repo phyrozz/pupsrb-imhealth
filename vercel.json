@@ -5,7 +5,7 @@
       "schedule": "0 9 * * *"
     },
     {
-      "path": "api/cron/email-send-unanswered-email-reminder",
+      "path": "/api/cron/email-send-unanswered-email-reminder",
       "schedule": "30 9 * * *"
     }
   ]
