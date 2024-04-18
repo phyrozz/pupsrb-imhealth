@@ -103,6 +103,7 @@ export default function SurveyComponent({ session }) {
         {
           last_assessment_at: new Date().toISOString(), // Current timestamp
           reminder_sent: false,
+          unanswered_reminder_sent: false  // For unanswered assessments one week after assessment reminder was sent
         }
       )
 

@@ -2,7 +2,11 @@
   "crons": [
     {
       "path": "/api/cron/email-send-api",
-      "schedule": "10 13 * * *"
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "api/cron/email-send-unanswered-email-reminder",
+      "schedule": "30 9 * * *"
     }
   ]
 }
