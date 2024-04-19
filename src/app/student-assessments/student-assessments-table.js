@@ -254,7 +254,7 @@ export default function StudentAssessmentsTable() {
                 <TableColumn>Name</TableColumn>
                 <TableColumn>Student Number</TableColumn>
                 <TableColumn>Result</TableColumn>
-                <TableColumn>Counseling Status</TableColumn>
+                <TableColumn>Status</TableColumn>
               </TableHeader>
               <TableBody emptyContent={"No rows to display."}>
                 {assessments.map((item) => (
