@@ -125,7 +125,7 @@ export default function SignUpForm() {
       if (password === confirmPassword && isStudentNumberValid) {
         const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: "https://pupsrb-imhealth.vercel.app/assessment/login", captchaToken } })
         captcha.current.resetCaptcha()
-  
+
         if (data.user && data.user.identities && data.user.identities.length == 0) {
           setError("Account already exists.")
         } else if (error) {
@@ -161,8 +161,7 @@ export default function SignUpForm() {
           setConfirmPassword('')
           setError(null)
 
-          await supabase.auth.signInWithPassword({ email, password })
-          router.replace("/assessment/form")
+          router.replace("/assessment/login")
           // onOpen()
         }
       } else {
@@ -263,19 +262,8 @@ export default function SignUpForm() {
                 </div>
                 <p className="text-sm text-center mb-5">By creating an account, you agree to PUP&apos;s Privacy Statement. Read more at <Link size="sm" href="https://www.pup.edu.ph/privacy/" target="_blank">https://www.pup.edu.ph/privacy/</Link></p>
                 <div className="flex flex-col items-end">
-                  <Button type="submit" color="primary">
-                    {isLoading ? 
-                      <motion.div
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        ease: [0, 0.71, 0.2, 1.01]
-                      }}
-                      >
-                        <CircularProgress />
-                      </motion.div> : <IconArrowRightShort />
-                    }
+                  <Button type="submit" color="primary" isLoading={isLoading}>
+                    <IconArrowRightShort />
                   </Button>
                 </div>
               </form>
