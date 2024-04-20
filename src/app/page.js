@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import AuthForm from "./auth-form"
+import AuthForm from "./components/auth-form"
 import { NextUIProvider } from "@nextui-org/react"
 import { Link } from "@nextui-org/react"
 

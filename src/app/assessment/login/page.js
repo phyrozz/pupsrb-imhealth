@@ -1,5 +1,5 @@
 "use client"
-import AuthForm from "@/app/auth-form"
+import AuthForm from "@/app/components/auth-form"
 import React from "react"
 import { NextUIProvider } from "@nextui-org/react"
 
