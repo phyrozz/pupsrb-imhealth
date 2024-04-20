@@ -21,10 +21,10 @@ import AssessmentResponsesModal from "./assessment-responses-modal"
 // import { pdf } from '@react-pdf/renderer'
 // import { saveAs } from 'file-saver'
 // import GeneratePDFByStudent from "../generate-report/by-student/generate-pdf"
-import IconIconEdit from "../components/edit-icon"
-import IconClose from "../components/close-icon"
-import ConfirmSendEmailModal from "./confirm-email-modal"
-import IconBxSave from "../components/bx-save"
+import IconIconEdit from "../icons/edit-icon"
+import IconClose from "../icons/close-icon"
+import ConfirmSendEmailModal from "../students/confirm-email-modal"
+import IconBxSave from "../icons/bx-save"
 
 export default function StudentHistorySidebar({ user, onClose }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

@@ -8,7 +8,7 @@ import {
   DropdownItem, DropdownTrigger, Dropdown, DropdownMenu
 } from '@nextui-org/react'
 import menuItems from '../data/navbar-menu-items.json'
-import { ChevronDown } from './chevron-icon'
+import { ChevronDown } from '../icons/chevron-icon'
 
 export default function CustomNavbar(props) {
   const activeLink = props.activeLink

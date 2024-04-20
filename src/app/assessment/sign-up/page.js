@@ -2,7 +2,7 @@
 import { NextUIProvider, Link, Button } from "@nextui-org/react"
 import React from "react"
 import SignUpForm from "./signup-form"
-import IconArrowBackUp from "@/app/components/arrow-back-up"
+import IconArrowBackUp from "@/app/icons/arrow-back-up"
 
 export default function SignUpPage() {
     return (

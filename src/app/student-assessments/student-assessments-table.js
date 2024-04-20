@@ -19,10 +19,10 @@ import {
 } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { motion } from 'framer-motion'
-import AssessmentResponsesModal from '../students/assessment-responses-modal'
-import StudentHistorySidebar from '../students/student-history-sidebar'
-import { SearchIcon } from '../components/search-icon'
-import IconFiltering from '../components/filter-icon'
+import AssessmentResponsesModal from '../components/assessment-responses-modal'
+import StudentHistorySidebar from '../components/student-history-sidebar'
+import { SearchIcon } from '../icons/search-icon'
+import IconFiltering from '../icons/filter-icon'
 
 
 export default function StudentAssessmentsTable() {

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, Input, Divider, Button, Link, CircularProgress } from '@nextui-org/react'
 import { motion } from 'framer-motion'
-import IconArrowRightShort from './arrow-right-short'
+import IconArrowRightShort from '../icons/arrow-right-short'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 

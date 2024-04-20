@@ -12,7 +12,7 @@ import {
   RadioGroup, Radio, 
   Link
 } from "@nextui-org/react"
-import IconArrowRightShort from "@/app/components/arrow-right-short"
+import IconArrowRightShort from "@/app/icons/arrow-right-short"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 

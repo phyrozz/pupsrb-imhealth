@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, CircularProgress, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip } from '@nextui-org/react'
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import assessmentData from './assessment_questions.json'
+import assessmentData from '../data/assessment_questions.json'
 
 export default function AssessmentResponsesModal({ assessmentId, isOpen, onOpenChange }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

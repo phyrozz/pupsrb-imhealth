@@ -2,7 +2,7 @@
 import React from "react"
 import { Button, NextUIProvider, CircularProgress } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
-import IconArrowRightShort from "../components/arrow-right-short"
+import IconArrowRightShort from "../icons/arrow-right-short"
 import { motion } from "framer-motion"
 
 export default function AssessmentPage() {

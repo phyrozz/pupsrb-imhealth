@@ -3,7 +3,7 @@ import React from 'react'
 import jsPDF from 'jspdf'
 import { Button, Link, Card, CardBody, CardHeader, CardFooter } from "@nextui-org/react"
 import CustomNavbar from '../components/navbar'
-import IconArrowRightShort from '../components/arrow-right-short'
+import IconArrowRightShort from '../icons/arrow-right-short'
 import { motion } from 'framer-motion'
 
  export default function GenerateReportPage() {

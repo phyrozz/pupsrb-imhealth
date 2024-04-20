@@ -16,12 +16,12 @@ import {
 } from '@nextui-org/react'
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { motion } from "framer-motion"
-import StudentHistorySidebar from "./student-history-sidebar"
-import { SearchIcon } from '../components/search-icon'
+import StudentHistorySidebar from "../components/student-history-sidebar"
+import { SearchIcon } from '../icons/search-icon'
 import UploadCSVButton from './import-by-csv'
-import IconThreeDotsVertical from '../components/three-dots-vertical-icon'
-import IconFileImport from '../components/file-import'
-import IconFiltering from '../components/filter-icon'
+import IconThreeDotsVertical from '../icons/three-dots-vertical-icon'
+import IconFileImport from '../icons/file-import'
+import IconFiltering from '../icons/filter-icon'
 
 export default function StudentTable() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
