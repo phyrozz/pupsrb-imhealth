@@ -9,14 +9,14 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClientComponentClient({ supabaseUrl, supabaseKey })
 
-export default function AssessmentResultsDonutChart() {  
+export default function CountStudentByAnsweredAssessmentsPieChart() {  
   const [chartData, setChartData] = React.useState([])
   const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function getAssessmentResultCounts() {
       try {
-        const { data, error } = await supabase.rpc("count_apriori_results_by_scenario")
+        const { data, error } = await supabase.rpc("count_students")
 
         if (error) {
           throw error
@@ -25,15 +25,12 @@ export default function AssessmentResultsDonutChart() {
         setChartData(data)
         setIsLoading(false)
       } catch (error) {
-        console.error("Error fetching assessment result counts:", error.message)
+        console.error("Error fetching student counts:", error.message)
       }
     }
 
     getAssessmentResultCounts()
   }, [])
-
-  const chartLabels = chartData.map(result => result.scenario_name)
-  const chartSeries = chartData.map(result => result.result_count)
 
   return (
     <Card isBlurred>
@@ -42,7 +39,7 @@ export default function AssessmentResultsDonutChart() {
       :
       <>
         <CardHeader>
-          <p className="font-bold">Assessment Results</p>
+          <p className="font-bold">Students With/Without assessments</p>
         </CardHeader>
         <CardBody>
           <Chart 
@@ -50,7 +47,7 @@ export default function AssessmentResultsDonutChart() {
               chart: {
                 type: 'donut',
               },
-              labels: chartLabels,
+              labels: ["With assessments", "Without assessments"],
               legend: {
                 position: 'bottom',
               },
@@ -65,7 +62,7 @@ export default function AssessmentResultsDonutChart() {
                     labels: {
                       show: true,
                       total: {
-                        label: "Assessments",
+                        label: "Students",
                         show: true,
                         showAlways: true,
                       }
@@ -77,7 +74,7 @@ export default function AssessmentResultsDonutChart() {
                 type: 'gradient',
               }
             }}
-            series={chartSeries}
+            series={[chartData[0].answered_assessments_total, chartData[0].total - chartData[0].answered_assessments_total]}
             type="donut"
             width={"100%"}
             height={400}

@@ -62,6 +62,7 @@ export default function WorkingStudentDonutChart() {
                     labels: {
                       show: true,
                       total: {
+                        label: "Students",
                         show: true,
                         showAlways: true,
                       }

@@ -12,13 +12,14 @@ export default function ParticipatedSessionsChart() {
 
   const [chartSeries, setChartSeries] = React.useState([0, 0, 0])
   const [isLoading, setIsLoading] = React.useState(true)
+  const sessionUpperBound = 6
 
   React.useEffect(() => {
     async function getSessionCounts() {
       try {
         var sessions = []
-        for (let c = 0; c <= 3; c++) {
-          let count = 0
+        for (let c = 1; c <= sessionUpperBound; c++) {
+          let count = 1
           let { data } = await supabase.rpc("count_users_with_specific_assessment_count", { assessment_count: c })
           count = data[0].user_count
           sessions.push(count)
@@ -49,7 +50,7 @@ export default function ParticipatedSessionsChart() {
               chart: {
                 type: 'bar',
               },
-              labels: ["None", "Session 1", "Session 2", "Session 3"],
+              labels: Array.from({ length: sessionUpperBound }, (_, i) => `Session ${i + 1}`),
               plotOptions: {
                 bar: {
                   borderRadius: 5,

@@ -74,7 +74,7 @@ export default function AnsweredAssessmentsTrendChart() {
   }, [])
 
   return (
-    <Card>
+    <Card isBlurred>
       {isLoading ? 
       <Progress isIndeterminate size="sm" aria-label="Loading Chart..." /> 
       :
