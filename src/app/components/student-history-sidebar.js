@@ -25,6 +25,7 @@ import IconIconEdit from "../icons/edit-icon"
 import IconClose from "../icons/close-icon"
 import ConfirmSendEmailModal from "../students/confirm-email-modal"
 import IconBxSave from "../icons/bx-save"
+import StudentAssessmentTrend from "./student-assessment-trend"
 
 export default function StudentHistorySidebar({ user, onClose }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -370,6 +371,9 @@ export default function StudentHistorySidebar({ user, onClose }) {
                       {isEditMode ? <><IconBxSave /> Save Changes</> : <><IconIconEdit /> Edit Status(es)</>}
                     </Button>}
                   </div>
+
+                  {/* <StudentAssessmentTrend userId={userId} /> */}
+
                   <Table removeWrapper selectionMode="single" aria-label="Assessment History Table">
                     <TableHeader aria-label="Assessment History Table Header">
                       <TableColumn></TableColumn>
