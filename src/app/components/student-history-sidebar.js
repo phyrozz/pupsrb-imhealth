@@ -26,6 +26,8 @@ import IconClose from "../icons/close-icon"
 import ConfirmSendEmailModal from "../students/confirm-email-modal"
 import IconBxSave from "../icons/bx-save"
 import StudentAssessmentTrend from "./student-assessment-trend"
+import IconBxsHelpCircle from "../icons/bx-help"
+import StatusDescriptionModal from "./status-description-modal"
 
 export default function StudentHistorySidebar({ user, onClose }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -38,6 +40,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
   const [selectedAssessment, setSelectedAssessment] = React.useState(null)
   const {isOpen: isAssessmentResponsesModalOpen, onOpen: onAssessmentResponsesModalOpen, onOpenChange: onAssessmentResponsesModalOpenChange} = useDisclosure()
   const {isOpen: isConfirmEmailModalOpen, onOpen: onConfirmEmailModalOpen, onOpenChange: onConfirmEmailModalOpenChange} = useDisclosure()
+  const {isOpen: isStatusesDescriptionModalOpen, onOpen: onStatusesDescriptionModalOpen, onOpenChange: onStatusesDescriptionModalOpenChange} = useDisclosure()
   // const [popoverMessage, setPopoverMessage] = React.useState(null)
   const [userId, setUserId] = React.useState(null)
   const [isEditMode, setIsEditMode] = React.useState(false)
@@ -329,6 +332,7 @@ export default function StudentHistorySidebar({ user, onClose }) {
     <>
       <ConfirmSendEmailModal isOpen={isConfirmEmailModalOpen} onOpenChange={onConfirmEmailModalOpenChange} onClose={handleCloseModal} onConfirm={handleConfirmChanges} onCancel={handleCancelChanges} />
       <AssessmentResponsesModal assessmentId={selectedAssessment} isOpen={isAssessmentResponsesModalOpen} onOpenChange={onAssessmentResponsesModalOpenChange} />
+      <StatusDescriptionModal isOpen={isStatusesDescriptionModalOpen} onOpenChange={onStatusesDescriptionModalOpenChange} />
       <Card className="h-full w-full overflow-auto" aria-label="Sidebar Card">
         {user && (
           <>
@@ -367,13 +371,15 @@ export default function StudentHistorySidebar({ user, onClose }) {
                   </Table>
                   <div className="w-full flex flex-row justify-between items-center pb-1">
                     <h1 className="text-xl font-bold pb-3">Assessment History</h1>
-                    {(currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") && <Button variant={isEditMode ? "shadow" : "light"} onClick={handleEditButton}>
-                      {isEditMode ? <><IconBxSave /> Save Changes</> : <><IconIconEdit /> Edit Status(es)</>}
-                    </Button>}
+                    <div className="flex flex-row items-center">
+                      {(currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") && <Button variant={isEditMode ? "shadow" : "light"} onClick={handleEditButton}>
+                        {isEditMode ? <><IconBxSave /> Save Changes</> : <><IconIconEdit /> Edit Status(es)</>}
+                      </Button>}
+                      <Button variant="light" isIconOnly onClick={onStatusesDescriptionModalOpen}>
+                        <IconBxsHelpCircle />
+                      </Button>
+                    </div>
                   </div>
-
-                  {/* <StudentAssessmentTrend userId={userId} /> */}
-
                   <Table removeWrapper selectionMode="single" aria-label="Assessment History Table">
                     <TableHeader aria-label="Assessment History Table Header">
                       <TableColumn></TableColumn>
@@ -414,6 +420,9 @@ export default function StudentHistorySidebar({ user, onClose }) {
                       </PopoverContent>}
                     </Popover>
                   </div> */}
+                  <div className="w-full flex-flex-row justify-center items-center pt-3 pb-3">
+                    <StudentAssessmentTrend userId={userId} />
+                  </div>
                   <div className="w-full flex flex-row justify-between items-center pb-1 pt-4">
                     <h1 className="text-xl font-bold pb-3">Result Interpretations</h1>
                   </div>
