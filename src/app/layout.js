@@ -6,8 +6,8 @@ import { Analytics } from '@vercel/analytics/react'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'PUPSRB-iMHealth',
-  description: 'PUPSRB-iMHealth',
+  title: 'PUPSRC-iMHealth',
+  description: 'PUPSRC-iMHealth',
 }
 
 export default function RootLayout({ children }) {
