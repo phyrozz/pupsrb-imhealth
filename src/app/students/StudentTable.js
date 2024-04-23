@@ -133,13 +133,16 @@ export default function StudentTable() {
               size="sm"
               className="max-w-40"
               isClearable={false}
-              defaultSelectedKey={"1"}
+              defaultSelectedKey={"0"}
               onSelectionChange={handleBySessionAutocompleteChange}
             >
               <AutocompleteItem key="0">All</AutocompleteItem>
               <AutocompleteItem key="1">1</AutocompleteItem>
               <AutocompleteItem key="2">2</AutocompleteItem>
               <AutocompleteItem key="3">3</AutocompleteItem>
+              <AutocompleteItem key="4">4</AutocompleteItem>
+              <AutocompleteItem key="5">5</AutocompleteItem>
+              <AutocompleteItem key="6">6</AutocompleteItem>
             </Autocomplete>
 
             <Autocomplete
