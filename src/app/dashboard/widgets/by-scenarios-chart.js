@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Card, CardHeader, CardBody, Progress } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, Skeleton } from '@nextui-org/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
@@ -38,7 +38,16 @@ export default function AssessmentResultsDonutChart() {
   return (
     <Card isBlurred>
       {isLoading ?
-      <Progress isIndeterminate size="sm" aria-label="Loading Chart..." />
+      <div className="space-y-5 p-4">
+        <div className="space-y-3">
+          <Skeleton className="w-3/5 rounded-lg">
+            <div className="h-8 w-3/5 rounded-lg bg-default-200"></div>
+          </Skeleton>
+        </div>
+        <Skeleton className="rounded-lg p-2">
+          <div className="h-80 rounded-lg bg-default-300"></div>
+        </Skeleton>
+      </div>
       :
       <>
         <CardHeader>
