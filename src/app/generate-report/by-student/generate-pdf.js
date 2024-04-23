@@ -139,7 +139,7 @@ export default function GeneratePDFByStudent({ reports, scenarioData, startDate,
       </View>}
       <Table>
         <TH style={styles.tableHeader}>
-          <TD weighting={0.25} style={styles.tableCell}><Text style={styles.tableHeaderText}>Answered at</Text></TD>
+          <TD weighting={0.25} style={styles.tableCell}><Text style={styles.tableHeaderText}>Session Date</Text></TD>
           <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Status</Text></TD>
           <TD weighting={0.20} style={styles.tableCell}><Text style={styles.tableHeaderText}>Assessment Result</Text></TD>
           <TD weighting={0.35} style={styles.tableCell}><Text style={styles.tableHeaderText}>Possible issues related to</Text></TD>

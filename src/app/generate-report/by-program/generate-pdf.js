@@ -3,7 +3,7 @@ import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import { Table, TR, TH, TD } from '@ag-media/react-pdf-table'
 import IconCalendar from '../svg-icons/calendar'
 
-export default function GeneratePDF({ reports, scenarioData, startDate, endDate, filters }) {
+export default function GeneratePDF({ reports, scenarioData, startDate, endDate, recommendations, filters }) {
   const styles = StyleSheet.create({
     page: {
       fontFamily: 'Helvetica',
@@ -69,7 +69,8 @@ export default function GeneratePDF({ reports, scenarioData, startDate, endDate,
     },
     remarks: {
       borderRadius: 5,
-      padding: 100,
+      padding: 20,
+      fontSize: 12,
     }
   })
 
@@ -128,8 +129,8 @@ export default function GeneratePDF({ reports, scenarioData, startDate, endDate,
         <TH style={styles.tableHeader}>
           <TD weighting={0.3} style={styles.tableCell}><Text style={styles.tableHeaderText}>Name</Text></TD>
           <TD weighting={0.15} style={styles.tableCell}><Text style={styles.tableHeaderText}>Student Number</Text></TD>
-          <TD weighting={0.15} style={styles.tableCell}><Text style={styles.tableHeaderText}>Program & Year</Text></TD>
-          <TD weighting={0.2} style={styles.tableCell}><Text style={styles.tableHeaderText}>Answered at</Text></TD>
+          <TD weighting={0.15} style={styles.tableCell}><Text style={styles.tableHeaderText}>Year</Text></TD>
+          <TD weighting={0.2} style={styles.tableCell}><Text style={styles.tableHeaderText}>Session Date</Text></TD>
           <TD weighting={0.15} style={styles.tableCell}><Text style={styles.tableHeaderText}>Assessment Result</Text></TD>
         </TH>
         {data.map((item, index) => (
@@ -173,10 +174,10 @@ export default function GeneratePDF({ reports, scenarioData, startDate, endDate,
         {reportData.length > 0 && <AssessmentReport data={reportData} />}
         <ScenarioTable scenarios={scenarios} />
         <View style={styles.section}>
-          <Text style={styles.subHeader}>Remarks</Text>
+          <Text style={styles.subHeader}>Recommendations/Referral</Text>
           <Table>
-            <TR>
-              <TD style={styles.remarks}></TD>
+            <TR key={0}>
+              <TD style={styles.remarks}>{recommendations}</TD>
             </TR>
           </Table>
         </View>

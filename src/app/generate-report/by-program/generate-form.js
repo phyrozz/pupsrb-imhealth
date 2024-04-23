@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Button, Input, Chip, Select, SelectItem, CircularProgress, Popover, PopoverTrigger, PopoverContent, Textarea } from '@nextui-org/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { pdf } from '@react-pdf/renderer'
 import { saveAs } from 'file-saver'
@@ -23,6 +23,7 @@ export default function ByProgramForm() {
   const [selectedAssessmentResults, setSelectedAssessmentResults] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(true)
   const [popoverMessage, setPopoverMessage] = React.useState(null)
+  const [recommendations, setRecommendations] = React.useState("")
 
   const yearItems = ["1", "2", "3", "4", "5"]
   const assessmentResultItems = ["0", "1", "2", "3"]
@@ -160,6 +161,7 @@ export default function ByProgramForm() {
           scenarioData={scenarioData} 
           startDate={minDate}
           endDate={maxDate}
+          recommendations={recommendations}
           filters={filters}
         />).toBlob()
         .then((blob) => {
@@ -330,6 +332,9 @@ export default function ByProgramForm() {
                     ))
                   }
                 </Select>
+                <div className="pt-10">
+                  <Textarea label="Recommendations/Referral" value={recommendations} onValueChange={setRecommendations} />
+                </div>
               </div>
             }
           </CardBody>
