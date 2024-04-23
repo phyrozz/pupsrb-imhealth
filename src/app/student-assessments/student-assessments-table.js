@@ -43,10 +43,27 @@ export default function StudentAssessmentsTable() {
   const [statusNames, setStatusNames] = React.useState([])
   const [filterByScenario, setFilterByScenario] = React.useState("")
   const [filterByStatusName, setFilterByStatusName] = React.useState("")
-
-  const rowsPerPage = 20
+  const [rowsPerPage, setRowsPerPage] = React.useState(20)
+  const [currentUserRole, setCurrentUserRole] = React.useState("")
 
   const pages = Math.ceil(assessmentCount / rowsPerPage)
+
+  const getCurrentUserRole = React.useCallback(async () => {
+    try {
+      const { data: userSession, error: userError } = await supabase.auth.getSession()
+
+      if (userError) { throw userError }
+
+      const userEmail = userSession.session.user.email
+      const { data: adminData, error: adminError } = await supabase.from("admins").select("admin_roles!inner(role_name)").eq("email", userEmail).limit(1).single()
+
+      if (adminError) { throw adminError }
+
+      setCurrentUserRole(adminData.admin_roles.role_name)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [supabase])
 
   const getAssessments = React.useCallback(
     async () => {
@@ -75,7 +92,7 @@ export default function StudentAssessmentsTable() {
         setIsLoading(false)
       }
     },
-    [filterByScenario, filterByStatusName, page, searchQuery, supabase],
+    [filterByScenario, filterByStatusName, page, searchQuery, rowsPerPage, supabase],
   )
 
   const getScenarios = React.useCallback(
@@ -149,6 +166,10 @@ export default function StudentAssessmentsTable() {
     }
   }
 
+  const rowsPerPageAutocompleteChange = (key) => {
+    setRowsPerPage(key)
+  }
+
   const handleByScenarioAutocompleteChange = (key) => {
     setFilterByScenario(key)
   }
@@ -158,10 +179,11 @@ export default function StudentAssessmentsTable() {
   }
 
   React.useEffect(() => {
+    getCurrentUserRole()
     getAssessments()
     getScenarios()
     getStatusNames()
-  }, [page, searchQuery, filterByScenario, filterByStatusName, getAssessments, getScenarios, getStatusNames])
+  }, [page, searchQuery, filterByScenario, filterByStatusName, rowsPerPage, getCurrentUserRole, getAssessments, getScenarios, getStatusNames])
 
   return (
     <>
@@ -171,105 +193,77 @@ export default function StudentAssessmentsTable() {
         <CircularProgress aria-label="Loading..." />
       </div>
       :
-      <>
-        <div className="w-full pb-3 flex flex-row flex-wrap md:flex-nowrap justify-end items-center gap-3">
-          <IconFiltering />
-          <Autocomplete
-            label="by Scenario"
-            items={scenarios}
-            size="sm"
-            className="max-w-40"
-            isClearable={false}
-            defaultSelectedKey={""}
-            onSelectionChange={handleByScenarioAutocompleteChange}
-          >
-            <AutocompleteItem key="">All</AutocompleteItem>
-            {scenarios.map((scenario) => 
-              <AutocompleteItem key={scenario.name}>
-                {scenario.name}
-              </AutocompleteItem>)}
-          </Autocomplete>
+      (currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") ?
+        <>
+          <div className="w-full pb-3 flex flex-row justify-between items-center gap-3">
+            <div className="flex flex-wrap md:flex-nowrap justify-start items-end gap-2">
+              <p>Show</p>
+              <Autocomplete
+                size="sm"
+                className="max-w-20"
+                isClearable={false}
+                defaultSelectedKey={"20"}
+                onSelectionChange={rowsPerPageAutocompleteChange}
+              >
+                <AutocompleteItem key="10">10</AutocompleteItem>
+                <AutocompleteItem key="20">20</AutocompleteItem>
+                <AutocompleteItem key="50">50</AutocompleteItem>
+                <AutocompleteItem key="75">75</AutocompleteItem>
+                <AutocompleteItem key="100">100</AutocompleteItem>
+              </Autocomplete>
+              <p>records</p>
+            </div>
+            <div className="flex flex-wrap md:flex-nowrap justify-end items-center gap-3">
+              <IconFiltering />
+              <Autocomplete
+                label="by Scenario"
+                items={scenarios}
+                size="sm"
+                className="max-w-40"
+                isClearable={false}
+                defaultSelectedKey={""}
+                onSelectionChange={handleByScenarioAutocompleteChange}
+              >
+                <AutocompleteItem key="">All</AutocompleteItem>
+                {scenarios.map((scenario) => 
+                  <AutocompleteItem key={scenario.name}>
+                    {scenario.name}
+                  </AutocompleteItem>)}
+              </Autocomplete>
 
-          <Autocomplete
-            label="by Status"
-            items={statusNames}
-            size="sm"
-            className="max-w-52"
-            isClearable={false}
-            defaultSelectedKey={""}
-            onSelectionChange={handleByStatusNameAutocompleteChange}
-          >
-            <AutocompleteItem key="">All</AutocompleteItem>
-            {statusNames.map((status) => 
-              <AutocompleteItem key={status.name}>
-                {status.name}
-              </AutocompleteItem>)}
-          </Autocomplete>
+              <Autocomplete
+                label="by Status"
+                items={statusNames}
+                size="sm"
+                className="max-w-52"
+                isClearable={false}
+                defaultSelectedKey={""}
+                onSelectionChange={handleByStatusNameAutocompleteChange}
+              >
+                <AutocompleteItem key="">All</AutocompleteItem>
+                {statusNames.map((status) => 
+                  <AutocompleteItem key={status.name}>
+                    {status.name}
+                  </AutocompleteItem>)}
+              </Autocomplete>
 
-          <Input
-            isClearable
-            variant="faded"
-            radius="md"
-            size="lg"
-            className="w-96"
-            placeholder="Search by student..."
-            value={searchQuery}
-            onChange={handleSearch}
-            startContent={
-              <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
-            }
-            onClear={() => setSearchQuery("")}
-          />
-        </div>
-        <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.5,
-              ease: [0, 0.71, 0.2, 1.01],
-            }}
-            className="md:col-span-8 col-span-12 min-h-[90.3vh]"
-          >
-            <Table
-              isStriped
-              aria-label="Assessments table"
-              bottomContent={
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
-                </div>
-              }
-              className="text-slate-900"
-            >
-              <TableHeader>
-                <TableColumn></TableColumn>
-                <TableColumn>Name</TableColumn>
-                <TableColumn>Student Number</TableColumn>
-                <TableColumn>Result</TableColumn>
-                <TableColumn>Status</TableColumn>
-              </TableHeader>
-              <TableBody emptyContent={"No rows to display."}>
-                {assessments.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
-                    <TableCell className="cursor-pointer" onClick={() => handleStudentClick(item)}><Tooltip content="View Student's Detail" size="sm" placement="left" showArrow><p>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</p></Tooltip></TableCell>
-                    <TableCell>{item.student_number}</TableCell>
-                    <TableCell className="cursor-pointer" onClick={() => handleScenarioClick(item.id)}><Tooltip content="View Assessment Responses" size="sm" showArrow><Chip radius="full" color={item.color}>{item.result_scenario}</Chip></Tooltip></TableCell>
-                    <TableCell>{item.counseling_status}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </motion.div>
-          {isOpen && (
+              <Input
+                isClearable
+                variant="faded"
+                radius="md"
+                size="lg"
+                className="w-96"
+                placeholder="Search by student..."
+                value={searchQuery}
+                onChange={handleSearch}
+                startContent={
+                  <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                }
+                onClear={() => setSearchQuery("")}
+              />
+            </div>
+          </div>
+          <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -277,16 +271,68 @@ export default function StudentAssessmentsTable() {
                 duration: 0.5,
                 ease: [0, 0.71, 0.2, 1.01],
               }}
-              className="md:col-span-4 col-span-12 md:static fixed md:h-full h-[80vh] md:w-full w-[94.5vw]"
+              className="md:col-span-8 col-span-12 min-h-[90.3vh]"
             >
-              <StudentHistorySidebar
-                user={selectedUser}
-                onClose={handleCloseSidebar}
-              />
+              <Table
+                isStriped
+                aria-label="Assessments table"
+                bottomContent={
+                  <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      color="primary"
+                      page={page}
+                      total={pages}
+                      onChange={(page) => setPage(page)}
+                    />
+                  </div>
+                }
+                className="text-slate-900"
+              >
+                <TableHeader>
+                  <TableColumn></TableColumn>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Student Number</TableColumn>
+                  <TableColumn>Result</TableColumn>
+                  <TableColumn>Status</TableColumn>
+                </TableHeader>
+                <TableBody emptyContent={"No rows to display."}>
+                  {assessments.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true  })}</TableCell>
+                      <TableCell className="cursor-pointer" onClick={() => handleStudentClick(item)}><Tooltip content="View Student's Detail" size="sm" placement="left" showArrow><p>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</p></Tooltip></TableCell>
+                      <TableCell>{item.student_number}</TableCell>
+                      <TableCell className="cursor-pointer" onClick={() => handleScenarioClick(item.id)}><Tooltip content="View Assessment Responses" size="sm" showArrow><Chip radius="full" color={item.color}>{item.result_scenario}</Chip></Tooltip></TableCell>
+                      <TableCell>{item.counseling_status}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </motion.div>
-          )}
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.5,
+                  ease: [0, 0.71, 0.2, 1.01],
+                }}
+                className="md:col-span-4 col-span-12 md:static fixed md:h-full h-[80vh] md:w-full w-[94.5vw]"
+              >
+                <StudentHistorySidebar
+                  user={selectedUser}
+                  onClose={handleCloseSidebar}
+                />
+              </motion.div>
+            )}
+          </div>
+        </>
+        :
+        <div className="h-screen w-full flex flex-col justify-center items-center">
+          <p>You do not have access to this page. Please log in with a different account.</p>
         </div>
-      </>
       }
     </>
   )

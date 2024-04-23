@@ -36,12 +36,30 @@ export default function StudentTable() {
   const [selectedUser, setSelectedUser] = React.useState(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [searchQuery, setSearchQuery] = React.useState('')
-  const [filterBySession, setFilterBySession] = React.useState(1)
+  const [filterBySession, setFilterBySession] = React.useState(0)
   const [filterByProgram, setFilterByProgram] = React.useState("")
   const [programs, setPrograms] = React.useState([])
-  const rowsPerPage = 20
+  const [rowsPerPage, setRowsPerPage] = React.useState(20)
+  const [currentUserRole, setCurrentUserRole] = React.useState("")
 
   const pages = Math.ceil(studentCount / rowsPerPage)
+
+  const getCurrentUserRole = React.useCallback(async () => {
+    try {
+      const { data: userSession, error: userError } = await supabase.auth.getSession()
+
+      if (userError) { throw userError }
+
+      const userEmail = userSession.session.user.email
+      const { data: adminData, error: adminError } = await supabase.from("admins").select("admin_roles!inner(role_name)").eq("email", userEmail).limit(1).single()
+
+      if (adminError) { throw adminError }
+
+      setCurrentUserRole(adminData.admin_roles.role_name)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [supabase])
 
   const getStudents = useCallback(
     async () => {
@@ -68,7 +86,7 @@ export default function StudentTable() {
         setIsLoading(false)
       }
     },
-    [filterByProgram, filterBySession, page, searchQuery, supabase],
+    [filterByProgram, filterBySession, page, searchQuery, rowsPerPage, supabase],
   )
 
   const getPrograms = useCallback(
@@ -104,6 +122,10 @@ export default function StudentTable() {
       setPage(1)
     }
   }
+
+  const rowsPerPageAutocompleteChange = (key) => {
+    setRowsPerPage(key)
+  }
   
   const handleBySessionAutocompleteChange = (key) => {
     setFilterBySession(key)
@@ -114,9 +136,10 @@ export default function StudentTable() {
   }
 
   React.useEffect(() => {
+    getCurrentUserRole()
     getPrograms()
     getStudents()
-  }, [page, searchQuery, filterBySession, filterByProgram, getPrograms, getStudents])
+  }, [page, searchQuery, filterBySession, filterByProgram, rowsPerPage, getCurrentUserRole, getPrograms, getStudents])
 
   return (
     <>
@@ -125,67 +148,87 @@ export default function StudentTable() {
           <CircularProgress aria-label="Loading..." />
         </div>
       ) : (
+        (currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") ?
         <>
-          <div className="w-full pb-3 flex flex-row flex-wrap md:flex-nowrap justify-end items-center gap-3">
-            <IconFiltering />
-            <Autocomplete
-              label="by No. of Session"
-              size="sm"
-              className="max-w-40"
-              isClearable={false}
-              defaultSelectedKey={"0"}
-              onSelectionChange={handleBySessionAutocompleteChange}
-            >
-              <AutocompleteItem key="0">All</AutocompleteItem>
-              <AutocompleteItem key="1">1</AutocompleteItem>
-              <AutocompleteItem key="2">2</AutocompleteItem>
-              <AutocompleteItem key="3">3</AutocompleteItem>
-              <AutocompleteItem key="4">4</AutocompleteItem>
-              <AutocompleteItem key="5">5</AutocompleteItem>
-              <AutocompleteItem key="6">6</AutocompleteItem>
-            </Autocomplete>
+          <div className="w-full pb-3 flex flex-row justify-between items-center gap-3">
+            <div className="flex flex-wrap md:flex-nowrap justify-start items-end gap-2">
+              <p>Show</p>
+              <Autocomplete
+                size="sm"
+                className="max-w-20"
+                isClearable={false}
+                defaultSelectedKey={"20"}
+                onSelectionChange={rowsPerPageAutocompleteChange}
+              >
+                <AutocompleteItem key="10">10</AutocompleteItem>
+                <AutocompleteItem key="20">20</AutocompleteItem>
+                <AutocompleteItem key="50">50</AutocompleteItem>
+                <AutocompleteItem key="75">75</AutocompleteItem>
+                <AutocompleteItem key="100">100</AutocompleteItem>
+              </Autocomplete>
+              <p>records</p>
+            </div>
+            <div className="flex flex-wrap md:flex-nowrap justify-end items-center gap-3">
+              <IconFiltering />
+              <Autocomplete
+                label="by No. of Session"
+                size="sm"
+                className="max-w-40"
+                isClearable={false}
+                defaultSelectedKey={"0"}
+                onSelectionChange={handleBySessionAutocompleteChange}
+              >
+                <AutocompleteItem key="0">All</AutocompleteItem>
+                <AutocompleteItem key="1">1</AutocompleteItem>
+                <AutocompleteItem key="2">2</AutocompleteItem>
+                <AutocompleteItem key="3">3</AutocompleteItem>
+                <AutocompleteItem key="4">4</AutocompleteItem>
+                <AutocompleteItem key="5">5</AutocompleteItem>
+                <AutocompleteItem key="6">6</AutocompleteItem>
+              </Autocomplete>
 
-            <Autocomplete
-              label="by Program"
-              items={programs}
-              size="sm"
-              className="max-w-40"
-              isClearable={false}
-              defaultSelectedKey={""}
-              onSelectionChange={handleByProgramAutocompleteChange}
-            >
-              <AutocompleteItem key="">All</AutocompleteItem>
-              {programs.map((program) => 
-                <AutocompleteItem key={program.initial}>
-                  {program.initial}
-                </AutocompleteItem>)}
-            </Autocomplete>
-            
-            <Input
-              isClearable
-              variant="faded"
-              radius="md"
-              size="lg"
-              className="w-96"
-              placeholder="Search for student..."
-              value={searchQuery}
-              onChange={handleSearch}
-              startContent={
-                <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
-              }
-              onClear={() => setSearchQuery("")}
-            />
-            
-            <Dropdown closeOnSelect={false}>
-              <DropdownTrigger>
-                <Button variant="light" isIconOnly>
-                  <IconThreeDotsVertical />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Table Options Dropdown">
-                <DropdownItem key="import" endContent={<IconFileImport />}><UploadCSVButton /></DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+              <Autocomplete
+                label="by Program"
+                items={programs}
+                size="sm"
+                className="max-w-40"
+                isClearable={false}
+                defaultSelectedKey={""}
+                onSelectionChange={handleByProgramAutocompleteChange}
+              >
+                <AutocompleteItem key="">All</AutocompleteItem>
+                {programs.map((program) => 
+                  <AutocompleteItem key={program.initial}>
+                    {program.initial}
+                  </AutocompleteItem>)}
+              </Autocomplete>
+              
+              <Input
+                isClearable
+                variant="faded"
+                radius="md"
+                size="lg"
+                className="w-96"
+                placeholder="Search for student..."
+                value={searchQuery}
+                onChange={handleSearch}
+                startContent={
+                  <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                }
+                onClear={() => setSearchQuery("")}
+              />
+              
+              <Dropdown closeOnSelect={false}>
+                <DropdownTrigger>
+                  <Button variant="light" isIconOnly>
+                    <IconThreeDotsVertical />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Table Options Dropdown">
+                  <DropdownItem key="import" endContent={<IconFileImport />}><UploadCSVButton /></DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
           <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
             <motion.div
@@ -265,6 +308,10 @@ export default function StudentTable() {
             )}
           </div>
         </>
+        :
+        <div className="h-screen w-full flex flex-col justify-center items-center">
+          <p>You do not have access to this page. Please log in with a different account.</p>
+        </div>
       )}
     </>
   )

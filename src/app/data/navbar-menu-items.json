@@ -1,15 +1,18 @@
 [
   {
     "name": "Dashboard",
-    "href": "/dashboard"
+    "href": "/dashboard",
+    "restrictToRoles": []
   },
   {
     "name": "Students",
-    "href": "/students"
+    "href": "/students",
+    "restrictToRoles": ["guidance_counselor", "clinician", "su_admin"]
   },
   {
     "name": "Assessments",
-    "href": "/student-assessments"
+    "href": "/student-assessments",
+    "restrictToRoles": ["guidance_counselor", "clinician", "su_admin"]
   },
   {
     "name": "Generate Report",
@@ -25,10 +28,12 @@
         "description": "Generate a report by individual student and export it as .pdf or .csv",
         "href": "/generate-report/by-student"
       }
-    ]
+    ],
+    "restrictToRoles": []
   },
   {
     "name": "My Account",
-    "href": "/my-account"
+    "href": "/my-account",
+    "restrictToRoles": []
   }
 ]

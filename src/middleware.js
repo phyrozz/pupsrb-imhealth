@@ -36,7 +36,7 @@ export async function middleware(req) {
 
       allowedPaths = profileData.is_student
         ? ['/', '/assessment', '/assessment/login', '/assessment/form', '/assessment/sign-up']
-        : ['/', '/dashboard', '/students', '/my-account']
+        : ['/', '/dashboard', '/students', '/student-assessments', '/my-account']
     } else {
       allowedPaths = ['/', '/assessment', '/assessment/login', '/assessment/sign-up']
     }
@@ -54,5 +54,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard', '/students', '/my-account', '/assessment', '/assessment/login', '/assessment/sign-up', '/assessment/form'],
+  matcher: ['/', '/dashboard', '/students', '/student-assessments', '/my-account', '/assessment', '/assessment/login', '/assessment/sign-up', '/assessment/form'],
 }
