@@ -9,39 +9,9 @@ import {
 } from '@nextui-org/react'
 import menuItems from '../data/navbar-menu-items.json'
 import { ChevronDown } from '../icons/chevron-icon'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function CustomNavbar(props) {
   const activeLink = props.activeLink
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  const supabase = createClientComponentClient(supabaseUrl, supabaseKey)
-
-  const [currentUserRole, setCurrentUserRole] = React.useState("")
-
-  const getCurrentUserRole = React.useCallback(async () => {
-    try {
-      const { data: userSession, error: userError } = await supabase.auth.getSession()
-
-      if (userError) { throw userError }
-
-      const userEmail = userSession.session.user.email
-      const { data: adminData, error: adminError } = await supabase.from("admins").select("admin_roles!inner(role_name)").eq("email", userEmail).limit(1).single()
-
-      if (adminError) { throw adminError }
-
-      setCurrentUserRole(adminData.admin_roles.role_name)
-    } catch (error) {
-      console.error(error)
-    }
-  }, [supabase])
-
-  React.useEffect(() => {
-    getCurrentUserRole()
-  }, [getCurrentUserRole])
-  
 
   return (
     <Navbar shouldHideOnScroll isBordered>
@@ -54,10 +24,7 @@ export default function CustomNavbar(props) {
       
       <NavbarContent className="sm:flex hidden" justify="center">
         {menuItems.map((item, index) => {
-          const isRestricted = item.restrictToRoles.length && !item.restrictToRoles.includes(currentUserRole)
-          const hasDropdown = typeof item.dropdownItems !== 'undefined'
-          if (isRestricted) return null
-          if (hasDropdown) {
+          if (typeof item.dropdownItems !== 'undefined') {
             return (
               <Dropdown key={index}>
                 <NavbarItem>
@@ -92,12 +59,13 @@ export default function CustomNavbar(props) {
                 </DropdownMenu>
               </Dropdown>
             )
+          } else {
+            return (
+              <NavbarMenuItem isActive={activeLink === item.name} key={`${item}-${index}`}>
+                <Link className="w-full" isBlock color="foreground" href={item.href}>{item.name}</Link>
+              </NavbarMenuItem>
+            )
           }
-          return (
-            <NavbarMenuItem isActive={activeLink === item.name} key={`${item}-${index}`}>
-              <Link className="w-full" isBlock color="foreground" href={item.href}>{item.name}</Link>
-            </NavbarMenuItem>
-          )
         })}
       </NavbarContent>
       <NavbarContent justify="end">
