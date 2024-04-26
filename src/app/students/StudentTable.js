@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback } from 'react'
+import React from 'react'
 import { 
   Table, 
   TableHeader, 
@@ -40,28 +40,10 @@ export default function StudentTable() {
   const [filterByProgram, setFilterByProgram] = React.useState("")
   const [programs, setPrograms] = React.useState([])
   const [rowsPerPage, setRowsPerPage] = React.useState(20)
-  const [currentUserRole, setCurrentUserRole] = React.useState("")
 
   const pages = Math.ceil(studentCount / rowsPerPage)
 
-  const getCurrentUserRole = React.useCallback(async () => {
-    try {
-      const { data: userSession, error: userError } = await supabase.auth.getSession()
-
-      if (userError) { throw userError }
-
-      const userEmail = userSession.session.user.email
-      const { data: adminData, error: adminError } = await supabase.from("admins").select("admin_roles!inner(role_name)").eq("email", userEmail).limit(1).single()
-
-      if (adminError) { throw adminError }
-
-      setCurrentUserRole(adminData.admin_roles.role_name)
-    } catch (error) {
-      console.error(error)
-    }
-  }, [supabase])
-
-  const getStudents = useCallback(
+  const getStudents = React.useCallback(
     async () => {
       try {
         const { data, error } = await supabase
@@ -89,7 +71,7 @@ export default function StudentTable() {
     [filterByProgram, filterBySession, page, searchQuery, rowsPerPage, supabase],
   )
 
-  const getPrograms = useCallback(
+  const getPrograms = React.useCallback(
     async () => {
       try {
         const { data, error } = await supabase
@@ -136,22 +118,20 @@ export default function StudentTable() {
   }
 
   React.useEffect(() => {
-    getCurrentUserRole()
     getPrograms()
     getStudents()
-  }, [page, searchQuery, filterBySession, filterByProgram, rowsPerPage, getCurrentUserRole, getPrograms, getStudents])
+  }, [page, searchQuery, filterBySession, filterByProgram, rowsPerPage, getPrograms, getStudents])
 
   return (
     <>
-      {isLoading ? (
+      {isLoading ? 
         <div className="h-screen w-screen flex flex-col justify-center items-center">
           <CircularProgress aria-label="Loading..." />
         </div>
-      ) : (
-        (currentUserRole === "guidance_counselor" || currentUserRole === "clinician" || currentUserRole === "su_admin") ?
+      :
         <>
           <div className="w-full pb-3 flex flex-row justify-between items-center gap-3">
-            <div className="flex flex-wrap md:flex-nowrap justify-start items-end gap-2">
+            <div className="flex flex-wrap md:flex-nowrap justify-start items-center gap-2">
               <p>Show</p>
               <Autocomplete
                 size="sm"
@@ -307,12 +287,7 @@ export default function StudentTable() {
               </motion.div>
             )}
           </div>
-        </>
-        :
-        <div className="h-screen w-full flex flex-col justify-center items-center">
-          <p>You do not have access to this page. Please log in with a different account.</p>
-        </div>
-      )}
+        </>}
     </>
   )
 }
