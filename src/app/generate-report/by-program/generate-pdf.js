@@ -18,6 +18,12 @@ export default function GeneratePDF({ reports, scenarioData, startDate, endDate,
       gap: 5,
       paddingVertical: 3,
     },
+    flexRowSectionItemsBetween: {
+      flexDirection: 'row',
+      gap: 5,
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
     centerText: {
       fontSize: 10,
       textAlign: 'center',
@@ -118,7 +124,20 @@ export default function GeneratePDF({ reports, scenarioData, startDate, endDate,
 
   const AssessmentReport = ({ data }) => (
     <View style={styles.section}>
-      <Text style={styles.subHeader}>Assessments</Text>
+      <View style={styles.flexRowSectionItemsBetween}>
+        <Text style={styles.subHeader}>Assessments</Text>
+        <Text style={styles.boldedText}>
+          {new Date().toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+          })}
+        </Text>
+      </View>
       {startDate && endDate && <View style={styles.flexRowSection}>
         <IconCalendar />
         <Text style={styles.boldedText}>
