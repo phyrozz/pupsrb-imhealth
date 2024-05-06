@@ -7,6 +7,7 @@ import ParticipatedSessionsChart from "./widgets/participated-sessions-chart";
 import AnsweredAssessmentsTrendChart from "./widgets/answered-assessments-trend";
 import WorkingStudentDonutChart from "./widgets/working-student-chart";
 import CountStudentByAnsweredAssessmentsPieChart from "./widgets/count-stud-by-answered-assessments-chart";
+import AssessmentTrendCountChart from "./widgets/assessment-trend-count";
 
 export default function Dashboard({ session }) {
 	const user = session?.user
@@ -40,6 +41,7 @@ export default function Dashboard({ session }) {
           <WorkingStudentDonutChart /> 
           <ProgramCountTable />
           <ParticipatedSessionsChart />
+          <AssessmentTrendCountChart />
           <AnsweredAssessmentsTrendChart />
         </div>
       </div>
