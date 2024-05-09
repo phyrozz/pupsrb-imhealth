@@ -7,13 +7,13 @@
 // export async function GET() {
 //   try {
 //     const supabase = createClient(supabaseUrl, supabaseKey)
-//     const { data, error } = await supabase.rpc("count_scenario_increase")
+//     const { data: countData, error: countError } = await supabase.rpc("count_scenario_decrease")
 
-//     if (error) {
-//       throw error
+//     if (countError) {
+//       throw countError
 //     }
 
-//     return NextResponse.json({ message: 'Count retrieved successfully.', data: data }, { status: 200 })
+//     return NextResponse.json({ message: 'Count retrieved successfully.', data: countData }, { status: 200 })
 //   } catch (error) {
 //     return NextResponse.json({ message: 'Failed to retrieve count.', error: error }, { status: 400 }) 
 //   }

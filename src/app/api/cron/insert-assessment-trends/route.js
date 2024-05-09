@@ -16,13 +16,13 @@ export async function GET() {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey)
-    const { increaseTrend, increaseTrendError } = await supabase.rpc("count_scenario_increase")
+    const { data: increaseTrend, error: increaseTrendError } = await supabase.rpc("count_scenario_increase")
 
     if (increaseTrendError) {
       throw increaseTrendError
     }
 
-    const { decreaseTrend, decreaseTrendError } = await supabase.rpc("count_scenario_decrease")
+    const { data: decreaseTrend, error: decreaseTrendError } = await supabase.rpc("count_scenario_decrease")
 
     if (decreaseTrendError) {
       throw decreaseTrendError
