@@ -50,7 +50,7 @@ export default function AssessmentTrendCountChart() {
       :
       <>
         <CardHeader>
-          <p className="font-bold">Assessment Trends</p>
+          <p className="font-bold">Downward Assessment Growth</p>
         </CardHeader>
         <CardBody>
           <Chart

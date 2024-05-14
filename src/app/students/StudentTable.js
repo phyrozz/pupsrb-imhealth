@@ -45,6 +45,7 @@ export default function StudentTable() {
   const pages = Math.ceil(studentCount / rowsPerPage)
 
   const getStudents = async () => {
+    if (searchQuery.trim() === "") return
     try {
       setIsLoading(true)
       const { data, error } = await supabase
@@ -277,7 +278,7 @@ export default function StudentTable() {
           </Table>
         </motion.div>
         :
-        <div className="w-full h-screen flex justify-center items-center">Start searching for a student...</div>
+        <div className="w-full h-[85vh] flex justify-center items-center">Start searching for a student...</div>
         }
         
         {isOpen && (
