@@ -29,7 +29,8 @@ export default function StudentTable() {
 
   const supabase = createClientComponentClient(supabaseUrl, supabaseKey)
 
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [showTable, setShowTable] = React.useState(false)
   const [students, setStudents] = React.useState([])
   const [page, setPage] = React.useState(1)
   const [studentCount, setStudentCount] = React.useState(0)
@@ -43,33 +44,32 @@ export default function StudentTable() {
 
   const pages = Math.ceil(studentCount / rowsPerPage)
 
-  const getStudents = React.useCallback(
-    async () => {
-      try {
-        const { data, error } = await supabase
-          .rpc('get_users_with_multiple_assessments', { 
-            result_count: filterBySession, 
-            selected_program_initial: filterByProgram,
-            search_query: searchQuery,
-            page_size: rowsPerPage,
-            page_number: page
-        })
-  
-        if (error) {
-          throw error
-        }
-  
-        setStudentCount(data[0].total_count)
-        setStudents(data)
-      } catch (e) {
-        setStudents([])
-        console.error(e)
-      } finally {
-        setIsLoading(false)
+  const getStudents = async () => {
+    try {
+      setIsLoading(true)
+      const { data, error } = await supabase
+        .rpc('get_users_with_multiple_assessments', { 
+          result_count: filterBySession, 
+          selected_program_initial: filterByProgram,
+          search_query: searchQuery,
+          page_size: rowsPerPage,
+          page_number: page
+      })
+
+      if (error) {
+        throw error
       }
-    },
-    [filterByProgram, filterBySession, page, searchQuery, rowsPerPage, supabase],
-  )
+
+      setStudentCount(data[0].total_count)
+      setStudents(data)
+      setShowTable(true)
+    } catch (e) {
+      setStudents([])
+      console.error(e)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const getPrograms = React.useCallback(
     async () => {
@@ -119,175 +119,184 @@ export default function StudentTable() {
 
   React.useEffect(() => {
     getPrograms()
-    getStudents()
-  }, [page, searchQuery, filterBySession, filterByProgram, rowsPerPage, getPrograms, getStudents])
+  }, [getPrograms])
 
   return (
     <>
-      {isLoading ? 
-        <div className="h-screen w-screen flex flex-col justify-center items-center">
-          <CircularProgress aria-label="Loading..." />
+      <div className="w-full pb-3 flex flex-row justify-between items-center gap-3">
+        <div className="flex flex-wrap md:flex-nowrap justify-start items-center gap-2">
+          <p>Show</p>
+          <Autocomplete
+            size="sm"
+            className="max-w-20"
+            isClearable={false}
+            defaultSelectedKey={"20"}
+            onSelectionChange={rowsPerPageAutocompleteChange}
+          >
+            <AutocompleteItem key="10">10</AutocompleteItem>
+            <AutocompleteItem key="20">20</AutocompleteItem>
+            <AutocompleteItem key="50">50</AutocompleteItem>
+            <AutocompleteItem key="75">75</AutocompleteItem>
+            <AutocompleteItem key="100">100</AutocompleteItem>
+          </Autocomplete>
+          <p>records</p>
         </div>
-      :
-        <>
-          <div className="w-full pb-3 flex flex-row justify-between items-center gap-3">
-            <div className="flex flex-wrap md:flex-nowrap justify-start items-center gap-2">
-              <p>Show</p>
-              <Autocomplete
-                size="sm"
-                className="max-w-20"
-                isClearable={false}
-                defaultSelectedKey={"20"}
-                onSelectionChange={rowsPerPageAutocompleteChange}
-              >
-                <AutocompleteItem key="10">10</AutocompleteItem>
-                <AutocompleteItem key="20">20</AutocompleteItem>
-                <AutocompleteItem key="50">50</AutocompleteItem>
-                <AutocompleteItem key="75">75</AutocompleteItem>
-                <AutocompleteItem key="100">100</AutocompleteItem>
-              </Autocomplete>
-              <p>records</p>
-            </div>
-            <div className="flex flex-wrap md:flex-nowrap justify-end items-center gap-3">
-              <IconFiltering />
-              <Autocomplete
-                label="by No. of Session"
-                size="sm"
-                className="max-w-40"
-                isClearable={false}
-                defaultSelectedKey={"0"}
-                onSelectionChange={handleBySessionAutocompleteChange}
-              >
-                <AutocompleteItem key="0">All</AutocompleteItem>
-                <AutocompleteItem key="1">1</AutocompleteItem>
-                <AutocompleteItem key="2">2</AutocompleteItem>
-                <AutocompleteItem key="3">3</AutocompleteItem>
-                <AutocompleteItem key="4">4</AutocompleteItem>
-                <AutocompleteItem key="5">5</AutocompleteItem>
-                <AutocompleteItem key="6">6</AutocompleteItem>
-              </Autocomplete>
+        <div className="flex flex-wrap md:flex-nowrap justify-end items-center gap-3">
+          <IconFiltering />
+          <Autocomplete
+            label="by No. of Session"
+            size="sm"
+            className="max-w-40"
+            isClearable={false}
+            defaultSelectedKey={"0"}
+            onSelectionChange={handleBySessionAutocompleteChange}
+          >
+            <AutocompleteItem key="0">All</AutocompleteItem>
+            <AutocompleteItem key="1">1</AutocompleteItem>
+            <AutocompleteItem key="2">2</AutocompleteItem>
+            <AutocompleteItem key="3">3</AutocompleteItem>
+            <AutocompleteItem key="4">4</AutocompleteItem>
+            <AutocompleteItem key="5">5</AutocompleteItem>
+            <AutocompleteItem key="6">6</AutocompleteItem>
+          </Autocomplete>
 
-              <Autocomplete
-                label="by Program"
-                items={programs}
-                size="sm"
-                className="max-w-40"
-                isClearable={false}
-                defaultSelectedKey={""}
-                onSelectionChange={handleByProgramAutocompleteChange}
-              >
-                <AutocompleteItem key="">All</AutocompleteItem>
-                {programs.map((program) => 
-                  <AutocompleteItem key={program.initial}>
-                    {program.initial}
-                  </AutocompleteItem>)}
-              </Autocomplete>
-              
-              <Input
-                isClearable
-                variant="faded"
-                radius="md"
-                size="lg"
-                className="w-96"
-                placeholder="Search for student..."
-                value={searchQuery}
-                onChange={handleSearch}
-                startContent={
-                  <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
-                }
-                onClear={() => setSearchQuery("")}
-              />
-              
-              <Dropdown closeOnSelect={false}>
-                <DropdownTrigger>
-                  <Button variant="light" isIconOnly>
-                    <IconThreeDotsVertical />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Table Options Dropdown">
-                  <DropdownItem key="import" endContent={<IconFileImport />}><UploadCSVButton /></DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          </div>
-          <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.5,
-                ease: [0, 0.71, 0.2, 1.01],
-              }}
-              className="md:col-span-8 col-span-12 min-h-[90.3vh]"
+          <Autocomplete
+            label="by Program"
+            items={programs}
+            size="sm"
+            className="max-w-40"
+            isClearable={false}
+            defaultSelectedKey={""}
+            onSelectionChange={handleByProgramAutocompleteChange}
+          >
+            <AutocompleteItem key="">All</AutocompleteItem>
+            {programs.map((program) => 
+              <AutocompleteItem key={program.initial}>
+                {program.initial}
+              </AutocompleteItem>)}
+          </Autocomplete>
+          
+          <form name="" method="post" className="flex flex-row gap-2">
+            <Input
+              isClearable
+              variant="faded"
+              radius="md"
+              size="lg"
+              className="w-96"
+              placeholder="Search for student..."
+              value={searchQuery}
+              onChange={handleSearch}
+              startContent={
+                <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+              }
+              onClear={() => setSearchQuery("")}
+            />
+
+            <Button
+              color="primary"
+              size="lg"
+              onClick={getStudents}
+              isLoading={isLoading}
+              type="submit"
             >
-              <Table
-                isStriped
-                aria-label="Student table"
-                selectionMode="single"
-                bottomContent={
-                  <div className="flex w-full justify-center">
-                    <Pagination
-                      isCompact
-                      showControls
-                      showShadow
-                      color="primary"
-                      page={page}
-                      total={pages}
-                      onChange={(page) => setPage(page)}
-                    />
-                  </div>
-                }
-                className="text-slate-900"
-              >
-                <TableHeader>
-                  <TableColumn>Name</TableColumn>
-                  <TableColumn>Student Number</TableColumn>
-                  <TableColumn>Email</TableColumn>
-                  <TableColumn>Birth Date</TableColumn>
-                  <TableColumn>Program</TableColumn>
-                  <TableColumn>Year</TableColumn>
-                  <TableColumn>Marital Status</TableColumn>
-                  <TableColumn>Working Student?</TableColumn>
-                </TableHeader>
-                <TableBody emptyContent={"No rows to display."}>
-                  {students.map((item) => (
-                    <TableRow
-                      key={item.user_id}
-                      onClick={() => handleRowClick(item)}
-                    >
-                      <TableCell>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</TableCell>
-                      <TableCell>{item.student_number}</TableCell>
-                      <TableCell>{item.email}</TableCell>
-                      <TableCell>{new Date(item.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
-                      <TableCell>{item.program_initial}</TableCell>
-                      <TableCell>{item.year || "-"}</TableCell>
-                      <TableCell>{item.marital_status}</TableCell>
-                      <TableCell>
-                        {item.is_working_student ? "Yes" : "No"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </motion.div>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.5,
-                  ease: [0, 0.71, 0.2, 1.01],
-                }}
-                className="md:col-span-4 col-span-12 md:static fixed md:h-full h-[80vh] md:w-full w-[94.5vw]"
-              >
-                <StudentHistorySidebar
-                  user={selectedUser}
-                  onClose={handleCloseSidebar}
+              Search
+            </Button>
+          </form>
+          
+          <Dropdown closeOnSelect={false}>
+            <DropdownTrigger>
+              <Button variant="light" isIconOnly>
+                <IconThreeDotsVertical />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Table Options Dropdown">
+              <DropdownItem key="import" endContent={<IconFileImport />}><UploadCSVButton /></DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+      </div>
+      <div className={isOpen ? "grid grid-cols-12 gap-3" : ""}>
+        {showTable ? 
+          <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.5,
+            ease: [0, 0.71, 0.2, 1.01],
+          }}
+          className="md:col-span-8 col-span-12 min-h-[90.3vh]"
+        >
+          <Table
+            isStriped
+            aria-label="Student table"
+            selectionMode="single"
+            bottomContent={
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="primary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
                 />
-              </motion.div>
-            )}
-          </div>
-        </>}
+              </div>
+            }
+            className="text-slate-900"
+          >
+            <TableHeader>
+              <TableColumn>Name</TableColumn>
+              <TableColumn>Student Number</TableColumn>
+              <TableColumn>Email</TableColumn>
+              <TableColumn>Birth Date</TableColumn>
+              <TableColumn>Program</TableColumn>
+              <TableColumn>Year</TableColumn>
+              <TableColumn>Marital Status</TableColumn>
+              <TableColumn>Working Student?</TableColumn>
+            </TableHeader>
+            <TableBody emptyContent={"No rows to display."}>
+              {students.map((item) => (
+                <TableRow
+                  key={item.user_id}
+                  onClick={() => handleRowClick(item)}
+                >
+                  <TableCell>{`${item.first_name} ${item.middle_name} ${item.last_name} ${item.name_suffix}`}</TableCell>
+                  <TableCell>{item.student_number}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{new Date(item.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</TableCell>
+                  <TableCell>{item.program_initial}</TableCell>
+                  <TableCell>{item.year || "-"}</TableCell>
+                  <TableCell>{item.marital_status}</TableCell>
+                  <TableCell>
+                    {item.is_working_student ? "Yes" : "No"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </motion.div>
+        :
+        <div className="w-full h-screen flex justify-center items-center">Start searching for a student...</div>
+        }
+        
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.5,
+              ease: [0, 0.71, 0.2, 1.01],
+            }}
+            className="md:col-span-4 col-span-12 md:static fixed md:h-full h-[80vh] md:w-full w-[94.5vw]"
+          >
+            <StudentHistorySidebar
+              user={selectedUser}
+              onClose={handleCloseSidebar}
+            />
+          </motion.div>
+        )}
+      </div>
     </>
   )
 }
